@@ -141,7 +141,7 @@ void SkipList<T>::insert(std::unique_ptr<Node<T>> node2){
 
 template< class T >
 void SkipList<T>::remove(std::unique_ptr<Node<T>> node2){
-    head->find(node2)->remove(node2)
+    head->find(node2)->remove(node2);
 }
 
 template< class T >
