@@ -11,7 +11,7 @@ class Key_{
 public:
     int key;
     Key_(int k) : key(k) {};
-    int compareTo(Key_ key2){
+    int compareTo(Key_ key2) const{
         return key - key2.key;
     }
 };
@@ -28,8 +28,8 @@ public:
     int bf = 0; // balance factor
 
     // compare present value to value in node
-    Node(Key_ key);
     Key_ k;
+    Node(Key_ key): k(key){};
     int compareTo(std::unique_ptr<Node<T>>& node2);
 
     // getters - for display
@@ -40,18 +40,21 @@ public:
 
 template < typename T>
 class AVLtree {
-public:
+//public:   <- było tak, ale to raczej na odwrót co nie? Bo miałam, unreachable -- Magdaa
+private:
     AVLtree();
     ~AVLtree();
     std::unique_ptr<Node<T>> root;
     int node_count;
     int height() const;
-    int size() const;
+    //int size() const; <- to też było unreachable xd
     bool isEmpty() const;
     bool contains(const T& value);
     bool insert(const T& value);
     bool remove(const T& value);
-private:
+//private:
+public:
+    int size() const;
     bool contains(std::unique_ptr<Node<T>>& node, const T& value);
     auto insert(std::unique_ptr<Node<T>>& node, const T& value);
     auto remove(std::unique_ptr<Node<T>>& node, const T& value);

@@ -9,6 +9,22 @@ int Node<T>::compareTo(std::unique_ptr<Node<T>>& node2){
     return k.compareTo(node2->k);
 }
 
+template< class T >
+std::unique_ptr<Node<T>> Node<T>::get_left() const{
+    return left;
+}
+
+template< class T >
+std::unique_ptr<Node<T>> Node<T>::get_right() const{
+    return right;
+}
+
+// nie wiem co tutaj chciałaś zrobić
+template< class T >
+T Node<T>::get_value() const{
+    return;
+}
+
 template<typename T>
 AVLtree<T>::AVLtree() {
 }
@@ -76,7 +92,7 @@ bool AVLtree<T>::contains(std::unique_ptr<Node<T>> &node, const T &value) {
 }
 template<typename T>
 auto AVLtree<T>::insert(std::unique_ptr<Node<T>> &node, const T &value) {
-    if( node = nullptr) {
+    if( node == nullptr) {
         return new Node<T>(value);
     }
     int cmp = value.compareTo(node->value);
@@ -98,7 +114,7 @@ auto AVLtree<T>::remove(std::unique_ptr<Node<T>> &node, const T &value) {
     if( cmp < 0){
         node->left = remove(node->left, value);
     }
-    else if( cmp < 0){
+    else if( cmp > 0){
         node->right = remove(node->right, value);
     }
     else{
