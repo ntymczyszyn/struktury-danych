@@ -5,6 +5,7 @@
 #ifndef STRUKTURY_DANYCH_AVLTREE_H
 #define STRUKTURY_DANYCH_AVLTREE_H
 
+#include <iostream>
 #include <memory>
 
 class Key_{
@@ -19,7 +20,7 @@ public:
 template <typename T>
 class Node {
 public:
-    Node(const T& value){}; //do zrobienia Node jeszcze + compareTo <-Magda
+    Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda
     ~Node();
     std::unique_ptr<T> left;
     std::unique_ptr<T> right;
@@ -40,21 +41,24 @@ public:
 
 template < typename T>
 class AVLtree {
-//public:   <- było tak, ale to raczej na odwrót co nie? Bo miałam, unreachable -- Magdaa
-private:
+public:
+
     AVLtree();
     ~AVLtree();
     std::unique_ptr<Node<T>> root;
     int node_count;
     int height() const;
-    //int size() const; <- to też było unreachable xd
+    int size() const;
     bool isEmpty() const;
     bool contains(const T& value);
     bool insert(const T& value);
     bool remove(const T& value);
-//private:
-public:
-    int size() const;
+
+
+    void show_tree(std::unique_ptr<Node<T>>& node);
+private:
+    friend class Node<T>;  // <-nie jestem pewna czy ma być
+
     bool contains(std::unique_ptr<Node<T>>& node, const T& value);
     auto insert(std::unique_ptr<Node<T>>& node, const T& value);
     auto remove(std::unique_ptr<Node<T>>& node, const T& value);

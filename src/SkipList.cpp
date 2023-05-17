@@ -23,6 +23,7 @@ int Node_S<T>::compare_keys(unique_ptr<Node_S<T>>& node2){
     return k.compare_key(node2->k);
 }
 
+// find node of specified key in list
 template< class T >
 unique_ptr<Node_S<T>> Node_S<T>::find(unique_ptr<Node_S<T>>& found){
     if(found->compare_keys(right) >= 0)
@@ -93,6 +94,7 @@ void Node_S<T>::remove_node(std::unique_ptr<Node_S<T>> &node2){
 
 // SKIP LIST IMPLEMENTATION
 
+// key max and min tell us min and max values stored in the list
 template< class T >
 SkipList<T>::SkipList(int height_, Key min_key, Key max_key, int h) {
     height = height_;
@@ -143,6 +145,7 @@ void SkipList<T>::remove_element(std::unique_ptr<Node_S<T>>& node2){
     head->find(node2)->remove_node(node2);
 }
 
+// generate position of node in list based on the distance between nodes -> amount of keys with less value
 template< class T >
 int SkipList<T>::get_element_rank(std::unique_ptr<Node_S<T>>& node2){
     unique_ptr<Node_S<T>> temp = head->find(node2);
