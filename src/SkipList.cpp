@@ -28,11 +28,11 @@ int Node<T>::compare_keys(unique_ptr<Node<T>>& node2){
 }
 
 template< class T >
-unique_ptr<Node<T>> Node<T>::find(unique_ptr<Node<T>>& f){
-    if(f->compare_keys(right) >= 0)
-        return right->find(f);
+unique_ptr<Node<T>> Node<T>::find(unique_ptr<Node<T>>& found){
+    if(found->compare_keys(right) >= 0)
+        return right->find(found);
     else if(down != nullptr)
-        return down->find(f);
+        return down->find(found);
     return this;
 }
 
@@ -49,48 +49,48 @@ void Node<T>::insert_node(unique_ptr<Node<T>> &node2, unique_ptr<Node<T>> &lower
          node2->height = height;
          node2->left_distance = distance;
          node2->right->left_distance -= node2->left_distance -1;
-         unique_ptr<Node<T>> curr = this;
-         while(curr->up == nullptr){
-             distance += curr->left_distance;
-             curr = curr->left;
+         unique_ptr<Node<T>> temp = this;
+         while(temp->up == nullptr){
+             distance += temp->left_distance;
+             temp = temp->left;
          }
-         curr = curr->up;
-         curr->insert_node(new Node<T>(node2->k), node2, insert_height, distance);
+         temp = temp->up;
+         temp->insert_node(new Node<T>(node2->k), node2, insert_height, distance);
      }
      else{
-         unique_ptr<Node<T>> curr = this;
-         curr->right->left_distance++;
-         while( curr->left != nullptr || curr->up != nullptr) {
-             while (curr->up == nullptr) {
-                 curr = curr->left;
+         unique_ptr<Node<T>> temp = this;
+         temp->right->left_distance++;
+         while(temp->left != nullptr || temp->up != nullptr) {
+             while (temp->up == nullptr) {
+                 temp = temp->left;
              }
-             curr = curr->up;
-             curr->right->left_distance++;
+             temp = temp->up;
+             temp->right->left_distance++;
          }
      }
 }
 
 template< class T >
 void Node<T>::remove_node(std::unique_ptr<Node<T>> &node2){
-    unique_ptr<Node<T>> curr = this;
-    if(curr->compare_keys(node2) != 0){
+    unique_ptr<Node<T>> temp = this;
+    if(temp->compare_keys(node2) != 0){
         return;
     }
-    while(curr->up != nullptr){
-        curr->left->right = curr->right;
-        curr->right->left = curr->left;
-        curr->right->left_distance += curr->left_distance - 1;
-        curr = curr->up;
+    while(temp->up != nullptr){
+        temp->left->right = temp->right;
+        temp->right->left = temp->left;
+        temp->right->left_distance += temp->left_distance - 1;
+        temp = temp->up;
     }
-    curr->left->right = curr->right;
-    curr->right->left = curr->left;
-    curr->right->left_distance += curr->left_distance - 1;
-    while(curr->left != nullptr || curr->up != nullptr){
-        while(curr->up == nullptr) {
-            curr = curr->left;
+    temp->left->right = temp->right;
+    temp->right->left = temp->left;
+    temp->right->left_distance += temp->left_distance - 1;
+    while(temp->left != nullptr || temp->up != nullptr){
+        while(temp->up == nullptr) {
+            temp = temp->left;
         }
-        curr = curr->up;
-        curr->right->left_distance--;
+        temp = temp->up;
+        temp->right->left_distance--;
     }
 }
 
@@ -146,17 +146,17 @@ void SkipList<T>::remove_element(std::unique_ptr<Node<T>>& node2){
 
 template< class T >
 int SkipList<T>::get_element_rank(std::unique_ptr<Node<T>>& node2){
-    unique_ptr<Node<T>> curr = head->find(node2);
-    if(curr->compare_keys(node2) != 0) {
+    unique_ptr<Node<T>> temp = head->find(node2);
+    if(temp->compare_keys(node2) != 0) {
         return -1;
     }
     int distance_sum = 0;
-    while(curr->left != nullptr){
-        while(curr->up != nullptr){
-            curr = curr->up;
+    while(temp->left != nullptr){
+        while(temp->up != nullptr){
+            temp = temp->up;
         }
-        distance_sum += curr->left_distance;
-        curr = curr->left;
+        distance_sum += temp->left_distance;
+        temp = temp->left;
     }
     return distance_sum;
 }

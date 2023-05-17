@@ -6,21 +6,36 @@
 #define STRUKTURY_DANYCH_AVLTREE_H
 
 #include <memory>
+
+class Key_{
+public:
+    int key;
+    Key_(int k) : key(k) {};
+    int compareTo(Key_ key2){
+        return key - key2.key;
+    }
+};
+
 template <typename T>
 class Node {
 public:
-    Node(const T& value);
+    Node(const T& value){}; //do zrobienia Node jeszcze + compareTo <-Magda
     ~Node();
     std::unique_ptr<T> left;
     std::unique_ptr<T> right;
     T value;
-    int height;
-    int bf; // balance factor
+    int height = 0;
+    int bf = 0; // balance factor
+
+    // compare present value to value in node
+    Node(Key_ key);
+    Key_ k;
+    int compareTo(std::unique_ptr<Node<T>>& node2);
 
     // getters - for display
-    std::unique_ptr<Node<T>> getLeft() const;
-    std::unique_ptr<Node<T>> getRight() const;
-    T getValue() const;
+    std::unique_ptr<Node<T>> get_left() const;
+    std::unique_ptr<Node<T>> get_right() const;
+    T get_value() const;
 };
 
 template < typename T>
@@ -29,7 +44,7 @@ public:
     AVLtree();
     ~AVLtree();
     std::unique_ptr<Node<T>> root;
-    int nodeCount;
+    int node_count;
     int height() const;
     int size() const;
     bool isEmpty() const;
@@ -43,14 +58,14 @@ private:
 
     void update(std::unique_ptr<Node<T>>& node);
     auto balance(std::unique_ptr<Node<T>>& node);
-    auto leftLeftCase(std::unique_ptr<Node<T>>& node);
-    auto leftRightCase(std::unique_ptr<Node<T>>& node);
-    auto rightLeftCase(std::unique_ptr<Node<T>>& node);
-    auto rightRightCase(std::unique_ptr<Node<T>>& node);
-    auto leftRotation(std::unique_ptr<Node<T>>& node);
-    auto rightRotation(std::unique_ptr<Node<T>>& node);
-    T findMin(std::unique_ptr<Node<T>>& node) const;
-    T findMax(std::unique_ptr<Node<T>>& node) const;
+    auto left_left_case(std::unique_ptr<Node<T>>& node);
+    auto left_right_case(std::unique_ptr<Node<T>>& node);
+    auto right_left_case(std::unique_ptr<Node<T>>& node);
+    auto right_right_case(std::unique_ptr<Node<T>>& node);
+    auto left_rotation(std::unique_ptr<Node<T>>& node);
+    auto right_rotation(std::unique_ptr<Node<T>>& node);
+    T find_min(std::unique_ptr<Node<T>>& node) const;
+    T find_max(std::unique_ptr<Node<T>>& node) const;
 };
 
 

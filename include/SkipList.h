@@ -23,10 +23,10 @@ public:
     Node(Key key);
     Node();
     ~Node();
-    std::unique_ptr<Node<T>>& left;
-    std::unique_ptr<Node<T>>& right;
-    std::unique_ptr<Node<T>>& up;
-    std::unique_ptr<Node<T>>& down;
+    std::unique_ptr<Node<T>> left;
+    std::unique_ptr<Node<T>> right;
+    std::unique_ptr<Node<T>> up;
+    std::unique_ptr<Node<T>> down;
 
 
     int height;
@@ -51,8 +51,8 @@ public:
     int get_element_rank(std::unique_ptr<Node<T>>& node2);
 
 private:
-    std::unique_ptr<Node<T>>& head;
-    std::unique_ptr<Node<T>>& tail;
+    std::unique_ptr<Node<T>> head;
+    std::unique_ptr<Node<T>> tail;
     std::random_device rd;
     std::mt19937 rand;
     int height;
