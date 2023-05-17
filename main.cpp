@@ -2,23 +2,34 @@
 #include "include/AVLtree.h"
 #include <iostream>
 
+
 void skip_list(){
-    // max and min value stored in variable type int
-    Key min_key(INT_MIN);
-    Key max_key(INT_MAX);
+    SkipList<int> skip_list(0);
 
-    Key keey(6);
-    std::unique_ptr<Node_S<int>> node = std::make_unique<Node_S<int>>(keey);
-    SkipList<int>A(2, min_key, max_key, 2);
+    skip_list.insert_element(5);
+    skip_list.insert_element(10);
+    skip_list.insert_element(3);
+    skip_list.insert_element(7);
+    skip_list.insert_element(1);
 
-    A.insert_element(node);
-    std::cout << A.get_element_rank(node) << std::endl;
+    std::cout << "Rank of 5: " << skip_list.get_element_rank(5) << std::endl;
+    std::cout << "Rank of 10: " << skip_list.get_element_rank(10) << std::endl;
+    std::cout << "Rank of 3: " << skip_list.get_element_rank(3) << std::endl;
+    std::cout << "Rank of 7: " << skip_list.get_element_rank(7) << std::endl;
+    std::cout << "Rank of 1: " << skip_list.get_element_rank(1) << std::endl;
 
+    skip_list.remove_element(3);
+
+    std::cout << "Rank of 3 after removal: " << skip_list.get_element_rank(3) << std::endl;
+
+    skip_list.show_list();
 }
+
 void AVL_tree(){
     AVLtree<int> Tree;
-    Tree.insert(6);
-    Tree.insert(2);
+    for (int i = 0; i < 10; i++) {
+        Tree.insert(i);
+    }
     Tree.show_tree(Tree.root);
 
 }

@@ -6,7 +6,7 @@
 
 template< class T >
 int Node<T>::compareTo(std::unique_ptr<Node<T>>& node2){
-    return k.compareTo(node2->k);
+    return k -node2->k;
 }
 
 template< class T >
@@ -22,7 +22,7 @@ std::unique_ptr<Node<T>> Node<T>::get_right() const{
 // nie wiem co tutaj chciałaś zrobić
 template< class T >
 T Node<T>::get_value() const{
-    return;
+    return value;
 }
 
 template<typename T>

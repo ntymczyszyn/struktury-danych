@@ -8,14 +8,6 @@
 #include <iostream>
 #include <memory>
 
-class Key_{
-public:
-    int key;
-    Key_(int k) : key(k) {};
-    int compareTo(Key_ key2) const{
-        return key - key2.key;
-    }
-};
 
 template <typename T>
 class Node {
@@ -28,9 +20,9 @@ public:
     int height = 0;
     int bf = 0; // balance factor
 
-    // compare present value to value in node
-    Key_ k;
-    Node(Key_ key): k(key){};
+    // compare present value to value in node <- nie wiem czy to przypadkiem nie to samo co value hah -- Magda
+    T k;
+    Node(T key): k(key){};
     int compareTo(std::unique_ptr<Node<T>>& node2);
 
     // getters - for display

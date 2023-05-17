@@ -7,36 +7,30 @@
 
 #include <memory>
 #include <random>
-// compare values of element in the list/nodes
+#include <iostream>
 
-class Key{
-public:
-    int key;
-    explicit Key(int k) : key(k) {};
-    int compare_key(Key key2) const{
-        return key - key2.key;
-    }
-};
+
 
 template< class T >
 class Node_S{
 public:
-    explicit Node_S(Key key);
+    explicit Node_S(const T& key);
     Node_S();
     ~Node_S();
+
     std::unique_ptr<Node_S<T>> left;
     std::unique_ptr<Node_S<T>> right;
     std::unique_ptr<Node_S<T>> up;
     std::unique_ptr<Node_S<T>> down;
 
-
     int height = 0;
     int left_distance = 0;
-    Key k;
+    T k;
 
     int compare_keys(std::unique_ptr<Node_S<T>>& node2);
     std::unique_ptr<Node_S<T>> find(std::unique_ptr<Node_S<T>>& f);
-    void insert_node(std::unique_ptr <Node_S<T>> &node2, std::unique_ptr <Node_S<T>> &lower, int insert_height, int distance);
+
+    void insert_node(std::unique_ptr <Node_S<T>>& node2, std::unique_ptr <Node_S<T>>& lower, int insert_height, int distance);
     void remove_node(std::unique_ptr<Node_S<T>>& node2);
 
 };
@@ -44,12 +38,15 @@ public:
 template< class T >
 class SkipList {
 public:
-    SkipList();
-    SkipList(int height, Key min_key, Key max_key, int h);
+    explicit SkipList(const T& value);
+    SkipList(int height, const T& min_key, const T& max_key, int h);
     ~SkipList();
-    void insert_element(std::unique_ptr<Node_S<T>>& node2);
-    void remove_element(std::unique_ptr<Node_S<T>>& node2);
-    int get_element_rank(std::unique_ptr<Node_S<T>>& node2);
+
+    void insert_element(const T& value);
+    void remove_element(const T& value);
+    int get_element_rank(const T& value);
+
+    void show_list() const;
 
 private:
     std::unique_ptr<Node_S<T>> head;
