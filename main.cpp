@@ -2,7 +2,7 @@
 #include "include/AVLtree.h"
 #include <iostream>
 
-
+// funkcje do sprawdzenia działania kodu
 void skip_list(){
     SkipList<int> skip_list(0);
 
