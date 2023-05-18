@@ -19,21 +19,17 @@ std::unique_ptr<Node<T>> Node<T>::get_right() const{
     return right;
 }
 
-// nie wiem co tutaj chciałaś zrobić
+// nie wiem co tutaj chciałaś zrobić i sie trochę pogubiłam z getterami w AVL -- Magda
 template< class T >
 T Node<T>::get_value() const{
     return value;
 }
-
 template<typename T>
 AVLtree<T>::AVLtree() {
-
 }
-
 template<typename T>
 AVLtree<T>::~AVLtree() {
 }
-
 template<typename T>
 int AVLtree<T>::height() const {
     if(root == nullptr)

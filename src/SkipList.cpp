@@ -150,7 +150,7 @@ SkipList<T>::~SkipList()= default;
 template< class T >
 void SkipList<T>::insert_element(const T& value){
     std::unique_ptr<Node_S<T>> node2 = std::make_unique<Node_S<T>>(value);
-    head->find(node2)->insert_node2(node2, nullptr, height, 1);
+    head->find(node2)->insert_node(node2, nullptr, height, 1);
 
 }
 
@@ -158,7 +158,7 @@ void SkipList<T>::insert_element(const T& value){
 template< class T >
 void SkipList<T>::remove_element(const T& value){
     std::unique_ptr<Node_S<T>> node2 = std::make_unique<Node_S<T>>(value);
-    head->find(node2)->remove_node2(node2);
+    head->find(node2)->remove_node(node2);
 }
 
 

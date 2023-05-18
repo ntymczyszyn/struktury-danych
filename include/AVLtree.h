@@ -12,7 +12,7 @@
 template <typename T>
 class Node {
 public:
-    Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda
+    Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda update: chyba to zrobiłam, ale warto sprawdzić XD
     ~Node();
     std::unique_ptr<T> left;
     std::unique_ptr<T> right;

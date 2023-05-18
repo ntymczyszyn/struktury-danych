@@ -9,6 +9,8 @@
 #include <random>
 #include <iostream>
 
+// to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
+
 
 
 template< class T >
