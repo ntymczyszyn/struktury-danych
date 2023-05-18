@@ -8,9 +8,7 @@ using namespace std;
 // NODE IMPLEMENTATION
 
 template< class T >
-Node_S<T>::Node_S(const T& keeey){
-    k = keeey;
-}
+Node_S<T>::Node_S(const T& keeey): k(keeey){}
 
 template< class T >
 Node_S<T>::Node_S()= default;
@@ -20,13 +18,13 @@ Node_S<T>::~Node_S()= default;
 
 // compare values of element in the list/nodes
 template< class T >
-int Node_S<T>::compare_keys(unique_ptr<Node_S<T>>& node2){
-    return k - node2->k; //????
+int Node_S<T>::compare_keys(Node_S<T>* node2){
+    return this->k - node2->k;
 }
 
 // Find node of specified key in List -> searching for the key value in List
 template< class T >
-unique_ptr<Node_S<T>> Node_S<T>::find(unique_ptr<Node_S<T>>& found){
+Node_S<T>* Node_S<T>::find(Node_S<T>* found){
     if(found->compare_keys(right) >= 0) // czy tylko >
         return right->find(found);
     else if(down != nullptr)
@@ -37,30 +35,30 @@ unique_ptr<Node_S<T>> Node_S<T>::find(unique_ptr<Node_S<T>>& found){
 
 // Insert Node
 template< class T >
-void Node_S<T>::insert_node(std::unique_ptr <Node_S<T>>& node2, std::unique_ptr <Node_S<T>>& lower, int insert_height, int distance){
+void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){
     if (height <= insert_height) {
-        node2->left = std::move(std::unique_ptr<Node_S<T>>(this));
+        node2->left = this;
         node2->right = right;
-        node2->down = std::move(std::unique_ptr<Node_S<T>>(lower));
-        right->left = node2.get();
-        right = node2.get();
+        node2->down = lower;
+        right->left = node2;
+        right = node2;
         if (lower != nullptr)
-            lower->up = node2.get();
+            lower->up = node2;
         node2->height = height;
         node2->left_distance = distance;
         node2->right->left_distance -= node2->left_distance - 1;
-        std::unique_ptr<Node_S<T>> temp = std::unique_ptr<Node_S<T>>(this);
+        Node_S<T>* temp = this;
         while (temp->up == nullptr) {
             distance += temp->left_distance;
             temp = temp->left;
         }
         temp = temp->up;
-        temp->insert_node(std::make_unique<Node_S<T>>(node2->k), node2, insert_height, distance);
+        temp->insert_node(node2, node2->down, insert_height, distance);
     }
     else {
-        std::unique_ptr<Node_S<T>> temp = this;
+        Node_S<T>* temp = this;
         temp->right->left_distance++;
-        while (temp->left != nullptr || temp->up != nullptr) {
+        while (temp->left != nullptr or temp->up != nullptr) {
             while (temp->up == nullptr) {
                 temp = temp->left;
             }
@@ -72,8 +70,8 @@ void Node_S<T>::insert_node(std::unique_ptr <Node_S<T>>& node2, std::unique_ptr 
 
 // Remove Node
 template< class T >
-void Node_S<T>::remove_node(std::unique_ptr<Node_S<T>>& node2){
-    std::unique_ptr<Node_S<T>> temp = std::unique_ptr<Node_S<T>>(this);
+void Node_S<T>::remove_node(Node_S<T>* node2){
+    Node_S<T>* temp = this;
     while (temp->up != nullptr) {
         temp->left->right = temp->right;
         temp->right->left = temp->left;
@@ -83,13 +81,14 @@ void Node_S<T>::remove_node(std::unique_ptr<Node_S<T>>& node2){
     temp->left->right = temp->right;
     temp->right->left = temp->left;
     temp->right->left_distance += temp->left_distance - 1;
-    while (temp->left != nullptr || temp->up != nullptr) {
+    while (temp->left != nullptr or temp->up != nullptr) {
         while (temp->up == nullptr) {
             temp = temp->left;
         }
         temp = temp->up;
         temp->right->left_distance--;
     }
+    delete node2;
 }
 
 
@@ -98,23 +97,23 @@ void Node_S<T>::remove_node(std::unique_ptr<Node_S<T>>& node2){
 
 template< class T >
 SkipList<T>::SkipList(const T& value): height(0){
-    head = make_unique<Node_S<T>>(value);
-    tail = make_unique<Node_S<T>>(value);
-    unique_ptr<Node_S<T>> temp_left = head;
-    unique_ptr<Node_S<T>> temp_right = tail;
-    temp_left->right = temp_right.get();
-    temp_right->left = temp_left.get();
-    temp_left->down = make_unique<Node_S<T>>(value);
-    temp_left->down->up = temp_left.get();
-    temp_right->down = make_unique<Node_S<T>>(value);
-    temp_right->down->up = temp_left.get();
+    head = new Node_S<T> (value);
+    tail = new Node_S<T> (value);
+    Node_S<T>* temp_left = head;
+    Node_S<T>* temp_right = tail;
+    temp_left->right = temp_right;
+    temp_right->left = temp_left;
+    temp_left->down = new Node_S<T> (value);
+    temp_left->down->up = temp_left;
+    temp_right->down = new Node_S<T> (value);
+    temp_right->down->up = temp_left;
     temp_left->left_distance = 0;
     temp_right->left_distance = 1;
-    temp_left = std::move(temp_left->down);
-    temp_right = std::move(temp_right->down);
+    temp_left = temp_left->down;
+    temp_right = temp_right->down;
 
 }
-
+/*
 // key max and min tell us min and max values stored in the list
 template< class T >
 SkipList<T>::SkipList(int height_, const T& min_key, const T& max_key, int h) {
@@ -141,14 +140,14 @@ SkipList<T>::SkipList(int height_, const T& min_key, const T& max_key, int h) {
     temp_left->up->down = nullptr;
     temp_right->up->down = nullptr;
 }
-
+*/
 
 template< class T >
 SkipList<T>::~SkipList()= default;
 
 template< class T >
 void SkipList<T>::insert_element(const T& value){
-    std::unique_ptr<Node_S<T>> node2 = std::make_unique<Node_S<T>>(value);
+    Node_S<T>* node2 = new Node_S<T> (value);
     head->find(node2)->insert_node(node2, nullptr, height, 1);
 
 }
@@ -156,7 +155,7 @@ void SkipList<T>::insert_element(const T& value){
 
 template< class T >
 void SkipList<T>::remove_element(const T& value){
-    std::unique_ptr<Node_S<T>> node2 = std::make_unique<Node_S<T>>(value);
+    Node_S<T>* node2 = new Node_S<T> (value);
     head->find(node2)->remove_node(node2);
 }
 
@@ -164,8 +163,8 @@ void SkipList<T>::remove_element(const T& value){
 // generate position of node in list based on the distance between nodes -> amount of keys with less value
 template< class T >
 int SkipList<T>::get_element_rank(const T& value){
-    std::unique_ptr<Node_S<T>> node2 = std::make_unique<Node_S<T>>(value);
-    std::unique_ptr<Node_S<T>> temp = head->find(node2);
+    Node_S<T>* node2 = new Node_S<T> (value);
+    Node_S<T>* temp = head->find(node2);
     if (temp->compare_keys(node2) != 0) {
         return -1;
     }
@@ -181,17 +180,16 @@ int SkipList<T>::get_element_rank(const T& value){
 
 }
 
-
 template<class T>
 void SkipList<T>::show_list() const {
-    auto node = head.get();
+    auto node = head;
     while (node->down) {
-        node = node->down.get();
+        node = node->down;
     }
-    node = node->right.get();
+    node = node->right;
     while (node->right) {
         std::cout << node->k << " ";
-        node = node->right.get();
+        node = node->right;
     }
     std::cout << std::endl;
 }

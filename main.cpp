@@ -1,10 +1,13 @@
 #include "include/SkipList.h"
 #include "include/AVLtree.h"
+#include "src/SkipList.cpp"
+#include "src/AVLtree.cpp"
 #include <iostream>
 
 // funkcje do sprawdzenia działania kodu
 void skip_list(){
-    SkipList<int> skip_list(0);
+    constexpr int test{1};
+    SkipList<int> skip_list(test);
 
     skip_list.insert_element(5);
     skip_list.insert_element(10);
@@ -28,7 +31,9 @@ void skip_list(){
 void AVL_tree(){
     AVLtree<int> Tree;
     for (int i = 0; i < 10; i++) {
-        Tree.insert(i);
+        if( Tree.insert(i)){
+            std::cout<<"okk"<<std::endl;
+        }
     }
     Tree.show_tree(Tree.root);
 

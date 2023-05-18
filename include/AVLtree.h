@@ -14,8 +14,8 @@ class Node{
 public:
     Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda update: chyba to zrobiłam, ale warto sprawdzić XD
     ~Node();
-    std::unique_ptr<T> left;
-    std::unique_ptr<T> right;
+    Node<T>* left;
+    Node<T>* right;
     T value;
     int height = 0;
     int bf = 0; // balance factor
@@ -24,8 +24,8 @@ public:
     T compareTo(const T& value_to_comp);
 
     // getters - for display
-    std::unique_ptr<Node<T>> get_left() const;
-    std::unique_ptr<Node<T>> get_right() const;
+    Node<T>* get_left() const;
+    Node<T>* get_right() const;
     T get_value() const;
 };
 
@@ -35,7 +35,7 @@ public:
 
     AVLtree();
     ~AVLtree();
-    std::unique_ptr<Node<T>> root;
+    Node<T>* root;
     int node_count;
     int height() const;
     int size() const;
@@ -45,24 +45,24 @@ public:
     bool remove(const T& value);
 
 
-    void show_tree(std::unique_ptr<Node<T>>& node);
+    void show_tree(Node<T>* node);
 private:
     friend class Node<T>;  // <-nie jestem pewna czy ma być
 
-    bool contains(std::unique_ptr<Node<T>>& node, const T& value);
-    auto insert(std::unique_ptr<Node<T>>& node, const T& value);
-    auto remove(std::unique_ptr<Node<T>>& node, const T& value);
+    bool contains(Node<T>* node, const T& value);
+    auto insert(Node<T>* node, const T& value);
+    auto remove(Node<T>* node, const T& value);
 
-    void update(std::unique_ptr<Node<T>>& node);
-    auto balance(std::unique_ptr<Node<T>>& node);
-    auto left_left_case(std::unique_ptr<Node<T>>& node);
-    auto left_right_case(std::unique_ptr<Node<T>>& node);
-    auto right_left_case(std::unique_ptr<Node<T>>& node);
-    auto right_right_case(std::unique_ptr<Node<T>>& node);
-    auto left_rotation(std::unique_ptr<Node<T>>& node);
-    auto right_rotation(std::unique_ptr<Node<T>>& node);
-    T find_min(std::unique_ptr<Node<T>>& node) const;
-    T find_max(std::unique_ptr<Node<T>>& node) const;
+    void update(Node<T>* node);
+    auto balance(Node<T>* node);
+    auto left_left_case(Node<T>* node);
+    auto left_right_case(Node<T>* node);
+    auto right_left_case(Node<T>* node);
+    auto right_right_case(Node<T>* node);
+    auto left_rotation(Node<T>* node);
+    auto right_rotation(Node<T>* node);
+    T find_min(Node<T>* node) const;
+    T find_max(Node<T>* node) const;
 };
 
 

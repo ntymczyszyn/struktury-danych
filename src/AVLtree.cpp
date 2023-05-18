@@ -3,6 +3,7 @@
 //
 
 #include "../include/AVLtree.h"
+#include <iostream>
 
 template< class T >
 T Node<T>::compareTo(const T& value_to_comp) {
@@ -10,12 +11,12 @@ T Node<T>::compareTo(const T& value_to_comp) {
 }
 
 template< class T >
-std::unique_ptr<Node<T>> Node<T>::get_left() const {
+Node<T>* Node<T>::get_left() const {
     return this->left;
 }
 
 template< class T >
-std::unique_ptr<Node<T>> Node<T>::get_right() const {
+Node<T>* Node<T>::get_right() const {
     return this->right;
 }
 
@@ -28,6 +29,7 @@ T Node<T>::get_value() const {
 
 template<typename T>
 AVLtree<T>::AVLtree() {
+    std::cout<<"avl"<<std::endl;
 }
 
 template<typename T>
@@ -59,11 +61,9 @@ bool AVLtree<T>::contains(const T& value) {
 
 template<typename T>
 bool AVLtree<T>::insert(const T& value) {
-    if (value == nullptr) {
-        return false;
-    }
+    // if (value == nullptr) { return false; }   <- potrzebne w ogóle?
     if (!contains(root, value)) {
-        root = insert(std::move(root), value);
+        root = insert(root, value);
         node_count++;
         return true;
     }
@@ -76,7 +76,7 @@ bool AVLtree<T>::remove(const T& value) {
         return false;
     }
     if (contains(root, value)) {
-        root = remove(std::move(root), value);
+        root = remove(root, value);
         node_count--;
         return true;
     }
@@ -84,11 +84,11 @@ bool AVLtree<T>::remove(const T& value) {
 }
 
 template<typename T>
-bool AVLtree<T>::contains(std::unique_ptr<Node<T>>& node, const T& value) {
+bool AVLtree<T>::contains(Node<T>* node, const T& value) {
     if (node == nullptr) {
         return false;
     }
-    T cmp = node.compareTo(value);
+    T cmp = node->compareTo(value);
     // get into left subtree
     if (cmp < 0) {
         return contains(node->left, value);
@@ -102,33 +102,33 @@ bool AVLtree<T>::contains(std::unique_ptr<Node<T>>& node, const T& value) {
 }
 
 template<typename T>
-auto AVLtree<T>::insert(std::unique_ptr<Node<T>>& node, const T& value) {
+auto AVLtree<T>::insert(Node<T>* node, const T& value) {
     if (node == nullptr) {
-        return std::make_unique<Node<T>>(value);
+        return new Node<T> (value);
     }
-    T cmp = node.compareTo(value);
+    T cmp = node->compareTo(value);
     // Insert node into the proper subtree
     if (cmp < 0) {
-        node->left = insert(std::move(node->left), value);
+        node->left = insert(node->left, value);
     }
     else if (cmp > 0) {
-        node->right = insert(std::move(node->right), value);
+        node->right = insert(node->right, value);
     }
     update(node);
-    return balance(std::move(node));
+    return balance(node);
 }
 
 template<typename T>
-auto AVLtree<T>::remove(std::unique_ptr<Node<T>>& node, const T& value) {
+auto AVLtree<T>::remove(Node<T>* node, const T& value) {
     if(node == nullptr) {
         return nullptr;
     }
-    T cmp = node.compareTo(value);
+    T cmp = node->compareTo(value);
     if (cmp < 0) {
-        node->left = remove(std::move(node->left), value);
+        node->left = remove(node->left, value);
     }
     else if (cmp > 0) {
-        node->right = remove(std::move(node->right), value);
+        node->right = remove(node->right, value);
     }
     else {
         if (node->left == nullptr) {
@@ -141,12 +141,12 @@ auto AVLtree<T>::remove(std::unique_ptr<Node<T>>& node, const T& value) {
             if (node->left->height > node->right->height) {
                 T successor_value = find_max(node->left);
                 node->value = successor_value;
-                node->left = remove(std::move(node->left), successor_value);
+                node->left = remove(node->left, successor_value);
             }
             else {
                 T successor_value = find_min(node->left);
                 node->value = successor_value;
-                node->right = remove(std::move(node->right), successor_value);
+                node->right = remove(node->right, successor_value);
             }
         }
     }
@@ -155,7 +155,7 @@ auto AVLtree<T>::remove(std::unique_ptr<Node<T>>& node, const T& value) {
 }
 
 template<typename T>
-void AVLtree<T>::update(std::unique_ptr<Node<T>>& node) {
+void AVLtree<T>::update(Node<T>* node) {
     int left_node_height = (node->left == nullptr) ? -1 : node->left->height;
     int right_node_height = (node->right == nullptr) ? -1 : node->right->height;
 
@@ -165,72 +165,72 @@ void AVLtree<T>::update(std::unique_ptr<Node<T>>& node) {
 }
 
 template<typename T>
-auto AVLtree<T>::balance(std::unique_ptr<Node<T>>& node) {
+auto AVLtree<T>::balance(Node<T>* node) {
     // Left subtree is too heavy
     if (node->bf == -2) {
         if (node->left->bf <= 0) {
-            return left_left_case(std::move(node));
+            return left_left_case(node);
         }
         else {
-            return left_right_case(std::move(node));
+            return left_right_case(node);
         }
     }
     // Right subtree is too heavy
     else if (node->bf == 2) {
         if (node->right->bf >= 0) {
-            return right_right_case(std::move(node));
+            return right_right_case(node);
         }
         else {
-            return right_left_case(std::move(node));
+            return right_left_case(node);
         }
     }
     return node;
 }
 
 template<typename T>
-auto AVLtree<T>::left_left_case(std::unique_ptr<Node<T>>& node) {
-    return right_rotation(std::move(node));
+auto AVLtree<T>::left_left_case(Node<T>* node) {
+    return right_rotation(node);
 }
 
 template<typename T>
-auto AVLtree<T>::left_right_case(std::unique_ptr<Node<T>>& node) {
-    node->left = left_rotation(std::move(node->left));
-    return left_left_case(std::move(node));
+auto AVLtree<T>::left_right_case(Node<T>* node) {
+    node->left = left_rotation(node->left);
+    return left_left_case(node);
 }
 
 template<typename T>
-auto AVLtree<T>::right_left_case(std::unique_ptr<Node<T>>& node) {
-    node->right = right_rotation(std::move(node->right));
-    return right_right_case(std::move(node));
+auto AVLtree<T>::right_left_case(Node<T>* node) {
+    node->right = right_rotation(node->right);
+    return right_right_case(node);
 }
 
 template<typename T>
-auto AVLtree<T>::right_right_case(std::unique_ptr<Node<T>>& node) {
-    return left_rotation(std::move(node));
+auto AVLtree<T>::right_right_case(Node<T>* node) {
+    return left_rotation(node);
 }
 
 template<typename T>
-auto AVLtree<T>::left_rotation(std::unique_ptr<Node<T>>& node) {
-    std::unique_ptr<Node<T>> new_parent = std::move(node->right);
-    node->right = std::move(new_parent->left);
-    new_parent->left = std::move(node);
+auto AVLtree<T>::left_rotation(Node<T>* node) {
+    Node<T>* new_parent = node->right;
+    node->right = new_parent->left;
+    new_parent->left = node;
     update(node);
     update(new_parent);
     return new_parent;
 }
 
 template<typename T>
-auto AVLtree<T>::right_rotation(std::unique_ptr<Node<T>>& node) {
-    std::unique_ptr<Node<T>> new_parent = std::move(node->left);
-    node->left = std::move(new_parent->right);
-    new_parent->right = std::move(node);
+auto AVLtree<T>::right_rotation(Node<T>* node) {
+    Node<T>* new_parent = node->left;
+    node->left = new_parent->right;
+    new_parent->right = node;
     update(node);
     update(new_parent);
     return new_parent;
 }
 
 template<typename T>
-T AVLtree<T>::find_min(std::unique_ptr<Node<T>>& node) const {
+T AVLtree<T>::find_min(Node<T>* node) const {
     while (node->left != nullptr) {
         node = node->left;
     }
@@ -238,7 +238,7 @@ T AVLtree<T>::find_min(std::unique_ptr<Node<T>>& node) const {
 }
 
 template<typename T>
-T AVLtree<T>::find_max(std::unique_ptr<Node<T>>& node) const {
+T AVLtree<T>::find_max(Node<T>* node) const {
     while (node->right != nullptr) {
         node = node->right;
     }
@@ -246,7 +246,7 @@ T AVLtree<T>::find_max(std::unique_ptr<Node<T>>& node) const {
 }
 
 template<typename T>
-void AVLtree<T>::show_tree( std::unique_ptr<Node<T>>& node){
+void AVLtree<T>::show_tree( Node<T>* node){
     if (node != nullptr) {
         show_tree(node->left);
         std::cout <<node->value<<" ";
