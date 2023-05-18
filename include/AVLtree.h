@@ -10,7 +10,7 @@
 
 
 template <typename T>
-class Node {
+class Node{
 public:
     Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda update: chyba to zrobiłam, ale warto sprawdzić XD
     ~Node();
@@ -21,9 +21,7 @@ public:
     int bf = 0; // balance factor
 
     // compare present value to value in node <- nie wiem czy to przypadkiem nie to samo co value hah -- Magda
-    T k;
-    Node(T key): k(key){};
-    int compareTo(std::unique_ptr<Node<T>>& node2);
+    T compareTo(const T& value_to_comp);
 
     // getters - for display
     std::unique_ptr<Node<T>> get_left() const;

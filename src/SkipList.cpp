@@ -21,13 +21,13 @@ Node_S<T>::~Node_S()= default;
 // compare values of element in the list/nodes
 template< class T >
 int Node_S<T>::compare_keys(unique_ptr<Node_S<T>>& node2){
-    return k - node2->k;
+    return k - node2->k; //????
 }
 
 // Find node of specified key in List -> searching for the key value in List
 template< class T >
 unique_ptr<Node_S<T>> Node_S<T>::find(unique_ptr<Node_S<T>>& found){
-    if(found->compare_keys(right) >= 0)
+    if(found->compare_keys(right) >= 0) // czy tylko >
         return right->find(found);
     else if(down != nullptr)
         return down->find(found);
@@ -110,10 +110,9 @@ SkipList<T>::SkipList(const T& value): height(0){
     temp_right->down->up = temp_left.get();
     temp_left->left_distance = 0;
     temp_right->left_distance = 1;
-    temp_left = move(temp_left->down);
-    temp_right = move(temp_right->down);
+    temp_left = std::move(temp_left->down);
+    temp_right = std::move(temp_right->down);
 
-    rand.seed(rd());
 }
 
 // key max and min tell us min and max values stored in the list

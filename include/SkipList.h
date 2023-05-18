@@ -6,11 +6,9 @@
 #define STRUKTURY_DANYCH_SKIPLIST_H
 
 #include <memory>
-#include <random>
 #include <iostream>
 
 // to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
-
 
 
 template< class T >
@@ -27,7 +25,7 @@ public:
 
     int height = 0;
     int left_distance = 0;
-    T k;
+    T k; // value
 
     int compare_keys(std::unique_ptr<Node_S<T>>& node2);
     std::unique_ptr<Node_S<T>> find(std::unique_ptr<Node_S<T>>& f);
@@ -53,8 +51,7 @@ public:
 private:
     std::unique_ptr<Node_S<T>> head;
     std::unique_ptr<Node_S<T>> tail;
-    std::random_device rd;
-    std::mt19937 rand;
+
     int height;
 };
 
