@@ -30,7 +30,6 @@ Node_S<T>* Node_S<T>::find(Node_S<T>* found){
     return this;
 }
 
-
 // Insert Node
 template< class T >
 void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){

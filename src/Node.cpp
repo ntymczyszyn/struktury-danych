@@ -5,23 +5,22 @@
 #include "../include/Node.h"
 
 template< class T >
-T Node<T>::compareTo(const T& value_to_comp) {
-    return this->value - value_to_comp; // do poprawy dla wartości ujemnych
-}
+Node<T>::Node(const T& value_): value(value_), left(nullptr), right(nullptr){};
 
 template< class T >
-Node<T>* Node<T>::get_left() const {
-    return this->left;
-}
+Node<T>::~Node(){
+};
 
 template< class T >
-Node<T>* Node<T>::get_right() const {
-    return this->right;
+T Node<T>::compareTo(const T& value_to_comp) {  // nie wyszukuje poprawnie duplikatow wartosci ujemych
+    if (this->value == value_to_comp) {
+        return this->value - value_to_comp;
+    }
+    else if (this->value < 0) {
+        return (-this->value) - value_to_comp;
+    }
+    else {
+        return this->value - value_to_comp;
+    }
 }
 
-// nie wiem co tutaj chciałaś zrobić i sie trochę pogubiłam z getterami w AVL -- Magda
-// chce zrobic jakies graficznie wyswietlanie tego drzewa -- Natalia
-template< class T >
-T Node<T>::get_value() const {
-    return this->value;
-}

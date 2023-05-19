@@ -36,16 +36,16 @@ void skip_list(){
 void AVL_tree(){
     AVLtree<int> Tree;
     Tree.insert(5);
-    Tree.insert(4);
+    Tree.insert(5);
     Tree.insert(7);
     Tree.insert(1);
-    Tree.insert(10);
     Tree.insert(6);
     Tree.insert(3);
-    std::cout<<"okkk"<<std::endl;
-    for (int i = 0; i < 180; i++) {
-        Tree.insert(100- i);
+
+    for (int i = 0; i < 20; i++) {
+        Tree.insert(5 - i);
     }
+    Tree.insert(-5);
     Tree.displayBinaryTree(Tree.root, "", true);
 }
 

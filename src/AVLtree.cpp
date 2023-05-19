@@ -8,7 +8,6 @@
 #include <cmath>
 template<typename T>
 AVLtree<T>::AVLtree(): root(nullptr) {
-    std::cout<<"AVL construktor"<<std::endl;
 }
 
 template<typename T>
@@ -41,6 +40,7 @@ bool AVLtree<T>::contains(const T& value) {
 template<typename T>
 bool AVLtree<T>::insert(const T& value) {
     if (!contains(root, value)) {
+        std::cout << "DODAWANIE " << value << std::endl;
         root = insert(root, value);
         node_count++;
         return true;
@@ -75,8 +75,10 @@ bool AVLtree<T>::contains(Node<T>* node, const T& value) {
     else if (cmp < 0) {
         return contains(node->right, value);
     }
-    return true;
-
+    else if (cmp == 0) {
+        std::cout << "WARTOSC JUZ ISTNIEJE " << value << std::endl;
+        return true;
+    }
 }
 
 template<typename T>
@@ -231,15 +233,16 @@ void AVLtree<T>::displayBinaryTree(Node<T> *root, std::string indent, bool last)
     std::cout << indent;
 
     if (last) {
-        std::cout << "|_____";
+        std::cout << "|_____ ";
         indent += "  ";
     } else {
-        std::cout << "|-----";
+        std::cout << "|----- ";
         indent += "| ";
     }
 
     std::cout << root->value << std::endl;
 
-    displayBinaryTree(root->left, indent + "     ", false);
-    displayBinaryTree(root->right, indent + "     ", true);
+    displayBinaryTree(root->right, indent + "     ", false);
+    displayBinaryTree(root->left, indent + "     ", true);
+
 }
