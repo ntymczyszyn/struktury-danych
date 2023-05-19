@@ -3,5 +3,19 @@ project(struktury_danych)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(struktury_danych
-        main.cpp src/AVLtree.cpp include/AVLtree.h src/SkipList.cpp include/SkipList.h)
+
+set(SOURCES
+        main.cpp
+        src/AVLtree.cpp
+        src/SkipList.cpp
+        src/Node_S.cpp
+        src/Node.cpp
+        )
+set(HEADERS
+        include/AVLtree.h
+        include/SkipList.h
+        include/Node_S.h
+        include/Node.h
+        )
+
+add_executable(struktury_danych ${SOURCES} ${HEADERS})
