@@ -10,11 +10,10 @@ using namespace std;
 template< class T >
 Node_S<T>::Node_S(const T& keeey): k(keeey){}
 
-template< class T >
-Node_S<T>::Node_S()= default;
-
-template< class T >
-Node_S<T>::~Node_S()= default;
+template< class T > //TODO usuwanie wskaznikow
+Node_S<T>::~Node_S(){
+    // delete node;
+}
 
 // compare values of element in the list/nodes
 template< class T >
@@ -88,7 +87,7 @@ void Node_S<T>::remove_node(Node_S<T>* node2){
         temp = temp->up;
         temp->right->left_distance--;
     }
-    delete node2;
+    delete temp;
 }
 
 
@@ -143,7 +142,7 @@ SkipList<T>::SkipList(int height_, const T& min_key, const T& max_key, int h) {
 */
 
 template< class T >
-SkipList<T>::~SkipList()= default;
+SkipList<T>::~SkipList()= default;  //TODO usuwanie wskaznikow
 
 template< class T >
 void SkipList<T>::insert_element(const T& value){

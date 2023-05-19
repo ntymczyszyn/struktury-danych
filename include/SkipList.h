@@ -9,13 +9,13 @@
 #include <iostream>
 
 // to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
+// cały czas do przoduu
 
 
 template< class T >
 class Node_S{
 public:
     Node_S(const T& key);
-    Node_S();
     ~Node_S();
 
     Node_S<T>* left;
