@@ -8,7 +8,7 @@
 #include <iostream>
 #include <memory>
 #include "Node.h"
-
+#include "../src/Node.cpp"
 
 template < typename T>
 class AVLtree {
@@ -23,8 +23,7 @@ public:
     bool contains(const T& value);
     bool insert(const T& value);
     bool remove(const T& value);
-
-    void show_tree(Node<T>* node);
+    void displayBinaryTree(Node<T> *root, std::string indent, bool last);
 
 private:
     friend class Node<T>;  // <-nie jestem pewna czy ma być

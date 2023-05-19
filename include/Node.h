@@ -8,7 +8,7 @@
 template <typename T>
 class Node{
 public:
-    Node(const T& value_): value(value_){}; //do zrobienia Node jeszcze + compareTo <-Magda update: chyba to zrobiłam, ale warto sprawdzić XD
+    Node(const T& value_): value(value_), left(nullptr), right(nullptr){}; //do zrobienia Node jeszcze + compareTo <-Magda update: chyba to zrobiłam, ale warto sprawdzić XD
     ~Node();
     Node<T>* left;
     Node<T>* right;

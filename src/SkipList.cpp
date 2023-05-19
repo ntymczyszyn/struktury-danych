@@ -5,91 +5,6 @@
 #include "../include/SkipList.h"
 using namespace std;
 
-// NODE IMPLEMENTATION
-
-template< class T >
-Node_S<T>::Node_S(const T& keeey): k(keeey){}
-
-template< class T > //TODO usuwanie wskaznikow
-Node_S<T>::~Node_S(){
-    // delete node;
-}
-
-// compare values of element in the list/nodes
-template< class T >
-int Node_S<T>::compare_keys(Node_S<T>* node2){
-    return this->k - node2->k;
-}
-
-// Find node of specified key in List -> searching for the key value in List
-template< class T >
-Node_S<T>* Node_S<T>::find(Node_S<T>* found){
-    if(found->compare_keys(right) >= 0) // czy tylko >
-        return right->find(found);
-    else if(down != nullptr)
-        return down->find(found);
-    return this;
-}
-
-
-// Insert Node
-template< class T >
-void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){
-    if (height <= insert_height) {
-        node2->left = this;
-        node2->right = right;
-        node2->down = lower;
-        right->left = node2;
-        right = node2;
-        if (lower != nullptr)
-            lower->up = node2;
-        node2->height = height;
-        node2->left_distance = distance;
-        node2->right->left_distance -= node2->left_distance - 1;
-        Node_S<T>* temp = this;
-        while (temp->up == nullptr) {
-            distance += temp->left_distance;
-            temp = temp->left;
-        }
-        temp = temp->up;
-        temp->insert_node(node2, node2->down, insert_height, distance);
-    }
-    else {
-        Node_S<T>* temp = this;
-        temp->right->left_distance++;
-        while (temp->left != nullptr or temp->up != nullptr) {
-            while (temp->up == nullptr) {
-                temp = temp->left;
-            }
-            temp = temp->up;
-            temp->right->left_distance++;
-        }
-    }
-}
-
-// Remove Node
-template< class T >
-void Node_S<T>::remove_node(Node_S<T>* node2){
-    Node_S<T>* temp = this;
-    while (temp->up != nullptr) {
-        temp->left->right = temp->right;
-        temp->right->left = temp->left;
-        temp->right->left_distance += temp->left_distance - 1;
-        temp = temp->up;
-    }
-    temp->left->right = temp->right;
-    temp->right->left = temp->left;
-    temp->right->left_distance += temp->left_distance - 1;
-    while (temp->left != nullptr or temp->up != nullptr) {
-        while (temp->up == nullptr) {
-            temp = temp->left;
-        }
-        temp = temp->up;
-        temp->right->left_distance--;
-    }
-    delete temp;
-}
-
 
 
 // SKIP LIST IMPLEMENTATION
@@ -112,34 +27,12 @@ SkipList<T>::SkipList(const T& value): height(0){
     temp_right = temp_right->down;
 
 }
-/*
-// key max and min tell us min and max values stored in the list
-template< class T >
-SkipList<T>::SkipList(int height_, const T& min_key, const T& max_key, int h) {
-    height = height_;
-    head = make_unique<Node_S<T>>(min_key);
-    tail = make_unique<Node_S<T>>(max_key);
-    unique_ptr<Node_S<T>> temp_left = move(head);
-    unique_ptr<Node_S<T>> temp_right = move(tail);
 
-    for(int i = 0; i <= h; i++){
-        temp_left->right = move(temp_right);
-        temp_right->left = move(temp_left);
-        temp_left->down = make_unique<Node_S<T>>(temp_left->k);
-        temp_left->down->up =temp_left.get();
-        temp_right->down = make_unique<Node_S<T>>(temp_right->k);
-        temp_right->down->up =temp_left.get();
-        temp_left->left_distance = 0;
-        temp_right->left_distance = 1;
-        temp_left->height = height - i;
-        temp_right->height = height - i;
-        temp_left = move(temp_left->down);
-        temp_right = move(temp_right->down);
-    }
-    temp_left->up->down = nullptr;
-    temp_right->up->down = nullptr;
+template< class T >
+SkipList<T>::SkipList(): height(0), head(nullptr), tail(nullptr){
+
 }
-*/
+
 
 template< class T >
 SkipList<T>::~SkipList()= default;  //TODO usuwanie wskaznikow

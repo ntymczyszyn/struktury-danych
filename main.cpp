@@ -8,6 +8,10 @@
 void skip_list(){
     constexpr int test{1};
     SkipList<int> skip_list(test);
+
+    skip_list.insert_element(5);
+    std::cout<<" okkkk "<<std::endl;
+
 /*
     skip_list.insert_element(5);
     skip_list.insert_element(10);
@@ -31,18 +35,23 @@ void skip_list(){
 
 void AVL_tree(){
     AVLtree<int> Tree;
-    /*for (int i = 0; i < 10; i++) {
-        if( Tree.insert(i)){
-            std::cout<<"okk"<<std::endl;
-        }
+    Tree.insert(5);
+    Tree.insert(4);
+    Tree.insert(7);
+    Tree.insert(1);
+    Tree.insert(10);
+    Tree.insert(6);
+    Tree.insert(3);
+    std::cout<<"okkk"<<std::endl;
+    for (int i = 0; i < 180; i++) {
+        Tree.insert(100- i);
     }
-    Tree.show_tree(Tree.root);
-*/
+    Tree.displayBinaryTree(Tree.root, "", true);
 }
 
 int main(){
 
-    skip_list();
+    //skip_list();
     AVL_tree();
     return 0;
 }

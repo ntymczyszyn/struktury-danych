@@ -4,32 +4,11 @@
 
 #include "../include/AVLtree.h"
 #include <iostream>
-
-template< class T >
-T Node<T>::compareTo(const T& value_to_comp) {
-    return this->value - value_to_comp;
-}
-
-template< class T >
-Node<T>* Node<T>::get_left() const {
-    return this->left;
-}
-
-template< class T >
-Node<T>* Node<T>::get_right() const {
-    return this->right;
-}
-
-// nie wiem co tutaj chciałaś zrobić i sie trochę pogubiłam z getterami w AVL -- Magda
-// chce zrobic jakies graficznie wyswietlanie tego drzewa -- Natalia
-template< class T >
-T Node<T>::get_value() const {
-    return this->value;
-}
-
+#include <queue>
+#include <cmath>
 template<typename T>
-AVLtree<T>::AVLtree() {
-    std::cout<<"avl"<<std::endl;
+AVLtree<T>::AVLtree(): root(nullptr) {
+    std::cout<<"AVL construktor"<<std::endl;
 }
 
 template<typename T>
@@ -61,7 +40,6 @@ bool AVLtree<T>::contains(const T& value) {
 
 template<typename T>
 bool AVLtree<T>::insert(const T& value) {
-    // if (value == nullptr) { return false; }   <- potrzebne w ogóle?
     if (!contains(root, value)) {
         root = insert(root, value);
         node_count++;
@@ -90,11 +68,11 @@ bool AVLtree<T>::contains(Node<T>* node, const T& value) {
     }
     T cmp = node->compareTo(value);
     // get into left subtree
-    if (cmp < 0) {
+    if (cmp > 0) {
         return contains(node->left, value);
     }
     // get into  right subtree
-    else if (cmp > 0) {
+    else if (cmp < 0) {
         return contains(node->right, value);
     }
     return true;
@@ -108,10 +86,10 @@ auto AVLtree<T>::insert(Node<T>* node, const T& value) {
     }
     T cmp = node->compareTo(value);
     // Insert node into the proper subtree
-    if (cmp < 0) {
+    if (cmp > 0) {
         node->left = insert(node->left, value);
     }
-    else if (cmp > 0) {
+    else if (cmp < 0) {
         node->right = insert(node->right, value);
     }
     update(node);
@@ -124,10 +102,10 @@ auto AVLtree<T>::remove(Node<T>* node, const T& value) {
         return nullptr;
     }
     T cmp = node->compareTo(value);
-    if (cmp < 0) {
+    if (cmp > 0) {
         node->left = remove(node->left, value);
     }
-    else if (cmp > 0) {
+    else if (cmp < 0) {
         node->right = remove(node->right, value);
     }
     else {
@@ -246,10 +224,22 @@ T AVLtree<T>::find_max(Node<T>* node) const {
 }
 
 template<typename T>
-void AVLtree<T>::show_tree( Node<T>* node){
-    if (node != nullptr) {
-        show_tree(node->left);
-        std::cout <<node->value<<" ";
-        show_tree(node->right);
+void AVLtree<T>::displayBinaryTree(Node<T> *root, std::string indent, bool last) {
+    if (root == nullptr)
+        return;
+
+    std::cout << indent;
+
+    if (last) {
+        std::cout << "|_____";
+        indent += "  ";
+    } else {
+        std::cout << "|-----";
+        indent += "| ";
     }
+
+    std::cout << root->value << std::endl;
+
+    displayBinaryTree(root->left, indent + "     ", false);
+    displayBinaryTree(root->right, indent + "     ", true);
 }
