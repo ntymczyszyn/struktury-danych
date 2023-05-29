@@ -5,6 +5,8 @@
 #ifndef STRUKTURY_DANYCH_NODE_S_H
 #define STRUKTURY_DANYCH_NODE_S_H
 
+#include <iostream>
+
 template< class T >
 class Node_S{
 public:

@@ -27,7 +27,7 @@ public:
 
 private:
     Node_S<T>* head;
-    Node_S<T>* tail;
+    //Node_S<T>* tail;
     int height;
 };
 

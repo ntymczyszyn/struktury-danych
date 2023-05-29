@@ -9,8 +9,18 @@ void skip_list(){
     constexpr int test{1};
     SkipList<int> skip_list(test);
 
+    //std::cout<<std::endl;
+    skip_list.show_list();// nie działa :((
+    std::cout<<std::endl;
+
     skip_list.insert_element(5);
-    std::cout<<" okkkk "<<std::endl;
+    std::cout<<std::endl<<" okkkk 1"<<std::endl<<std::endl;
+
+    skip_list.show_list();
+    std::cout<<std::endl;
+
+    skip_list.insert_element(10);
+    std::cout<<std::endl<<" okkkk 2"<<std::endl<<std::endl;
 
 /*
     skip_list.insert_element(5);
@@ -51,8 +61,8 @@ void AVL_tree(){
 
 int main(){
 
-    //skip_list();
-    AVL_tree();
+    skip_list();
+    //AVL_tree();
     return 0;
 }
 
