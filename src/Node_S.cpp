@@ -63,11 +63,13 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
                 break;
             temp = temp->left;
         }
+        // coś mi tutaj nie pasuje
         if(temp->up != nullptr) {
             temp = temp->up;
             temp->height++;   //potrzebne??
             temp->insert_node(node2, node2->down, insert_height, distance); //może tak byc??
         }
+
         //delete temp;
     }
     else {
@@ -99,11 +101,19 @@ void Node_S<T>::remove_node(Node_S<T>* node2){
     temp->right->left = temp->left;
     temp->right->left_distance += temp->left_distance - 1;
     while (temp->left != nullptr or temp->up != nullptr) {
-        while (temp->up == nullptr) {
+        while (temp->up == nullptr and temp->left != nullptr) {
             temp = temp->left;
         }
+        if(temp->right != nullptr)
+            temp->right->left_distance--;
+        //możliwe że najpierw bedzie trzeba dac up a potem zmieniac right, ale to jeszcze do sprawdzenia
         temp = temp->up;
-        temp->right->left_distance--;
+
+        std::cout<<"remove  0\n";
     }
+
+    std::cout<<"remove  1\n";
     delete node2; //chyba tak bedzie giit
+    std::cout<<"remove  2\n";
+    delete temp; //giit??
 }

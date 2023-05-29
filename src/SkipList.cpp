@@ -35,7 +35,7 @@ SkipList<T>::~SkipList()= default;  //TODO usuwanie wskaznikow
 template< class T >
 void SkipList<T>::insert_element(const T& value){
     Node_S<T>* node2 = new Node_S<T> (value);
-    // height -> random values
+    // hh -> random values
     int hh = 2;
     if( head->right == nullptr ) {
         Node_S<T>* tmp = head;
