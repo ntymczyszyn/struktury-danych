@@ -9,18 +9,16 @@ void skip_list(){
     constexpr int test{1};
     SkipList<int> skip_list(test);
 
-    //std::cout<<std::endl;
-    skip_list.show_list();// nie działa :((
     std::cout<<std::endl;
 
     skip_list.insert_element(5);
-    std::cout<<std::endl<<" okkkk 1"<<std::endl<<std::endl;
+    skip_list.insert_element(20);
+    skip_list.insert_element(34);
+    skip_list.insert_element(3);
+    skip_list.insert_element(10);
 
     skip_list.show_list();
     std::cout<<std::endl;
-
-    skip_list.insert_element(10);
-    std::cout<<std::endl<<" okkkk 2"<<std::endl<<std::endl;
 
 /*
     skip_list.insert_element(5);

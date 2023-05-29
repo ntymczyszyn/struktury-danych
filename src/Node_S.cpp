@@ -29,17 +29,18 @@ int Node_S<T>::compare_keys(Node_S<T>* node2){
 // Find node of specified key in List -> searching for the key value in List
 template< class T >
 Node_S<T>* Node_S<T>::find(Node_S<T>* found){
-    if(found->compare_keys(right) >= 0) // czy tylko >
+    if(right!=nullptr && found->compare_keys(right) >= 0 ) {// czy tylko >
         return right->find(found);
-    else if(down != nullptr)
+    }
+    else if(down != nullptr) {
         return down->find(found);
+    }
     return this;
 }
 
 // Insert Node
 template< class T >
 void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){
-    std::cout<<"insert node ->  height :"<<height<<"  value obecnee: "<<this->k<<" up this :"<<this->up<<std::endl;
     if (height <= insert_height) {
         node2->left = this;
         node2->right = right;
@@ -62,16 +63,14 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
                 break;
             temp = temp->left;
         }
-        temp = temp->up;
-        height++;   //potrzebne??
-        std::cout << "if 1 dziala??   "<<std::endl ;
-        std::cout << "if 2 dziala??   "<<this->up<<std::endl ;
-        temp->insert_node(node2, node2->down, insert_height, distance);
-
+        if(temp->up != nullptr) {
+            temp = temp->up;
+            temp->height++;   //potrzebne??
+            temp->insert_node(node2, node2->down, insert_height, distance); //może tak byc??
+        }
         //delete temp;
     }
     else {
-        std::cout<<"else 1 dziala??\n";
         Node_S<T>* temp = this;
         temp->right->left_distance++;
         // wyznaczanie odległości na każdej z wysokości od kolejnych elementów
@@ -82,12 +81,8 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
             temp = temp->up;
             temp->right->left_distance++;
         }
-        std::cout<<"else 2 dziala??\n";
         //delete temp; //można tak?
-        std::cout<<this->k<<std::endl;
     }
-
-    std::cout<<"koniec insert"<<std::endl;
 }
 
 // Remove Node
@@ -110,5 +105,5 @@ void Node_S<T>::remove_node(Node_S<T>* node2){
         temp = temp->up;
         temp->right->left_distance--;
     }
-    delete temp;
+    delete node2; //chyba tak bedzie giit
 }

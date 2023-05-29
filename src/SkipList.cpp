@@ -12,23 +12,15 @@ using namespace std;
 template< class T >//bez tail bo nie potrzebne tylko problemy powstaja
 SkipList<T>::SkipList(const T& value): height(2){
     head = new Node_S<T> (value);
-    //tail = new Node_S<T> (value);
     Node_S<T>* temp_left = head;
-   // Node_S<T>* temp_right = tail;
     for( int i = 0; i < height ; i++) {
-        //temp_left->right = temp_right;
-        //temp_right->left = temp_left;
-        temp_left->down = new Node_S<T>(value);
+        auto tmp = new Node_S<T>(value);
+        temp_left->down = tmp;
         temp_left->down->up = temp_left;
-        //temp_right->down = new Node_S<T>(value);
-        //temp_right->down->up = temp_left;
         temp_left->left_distance = 0;
-        //tail->left_distance = 1;
         temp_left = temp_left->down;
-        //temp_right = temp_right->down;
     }
     temp_left->up->down = nullptr;
-    //temp_right->up->down = nullptr;
 }
 
 template< class T > // aby tworzyć listę bez elementów;
@@ -44,14 +36,15 @@ template< class T >
 void SkipList<T>::insert_element(const T& value){
     Node_S<T>* node2 = new Node_S<T> (value);
     // height -> random values
+    int hh = 2;
+    if( head->right == nullptr ) {
+        Node_S<T>* tmp = head;
+        while(tmp->down != nullptr) { tmp = tmp->down; }
+        tmp->insert_node(node2, nullptr, hh, 1);
 
-    if(head->right == nullptr) {
-        std::cout<<"pierwszy insert \n";
-        head->insert_node(node2, nullptr, 2, 1);
     }
     else {
-        std::cout<<"kolejny insert \n";
-        head->find(node2)->insert_node(node2, nullptr, height, 1);
+        head->find(node2)->insert_node(node2, nullptr, hh, 1);
     }
 }
 
