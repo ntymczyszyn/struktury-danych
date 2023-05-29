@@ -10,7 +10,7 @@ using namespace std;
 // SKIP LIST IMPLEMENTATION
 
 template< class T >//bez tail bo nie potrzebne tylko problemy powstaja
-SkipList<T>::SkipList(const T& value): height(2){
+SkipList<T>::SkipList(const T& value): height(3){
     head = new Node_S<T> (value);
     Node_S<T>* temp_left = head;
     for( int i = 0; i < height ; i++) {
@@ -24,7 +24,7 @@ SkipList<T>::SkipList(const T& value): height(2){
 }
 
 template< class T > // aby tworzyć listę bez elementów;
-SkipList<T>::SkipList(): height(2), head(nullptr){ //}, tail(nullptr){
+SkipList<T>::SkipList(): height(3), head(nullptr){ //}, tail(nullptr){
 
 }
 
@@ -35,16 +35,19 @@ SkipList<T>::~SkipList()= default;  //TODO usuwanie wskaznikow
 template< class T >
 void SkipList<T>::insert_element(const T& value){
     Node_S<T>* node2 = new Node_S<T> (value);
-    // hh -> random values
-    int hh = 2;
+    // node_height -> random values
+    std::uniform_int_distribution<int> dis(1, 3);
+    int node_height = dis(rand);
+    std::cout << "poziom: " << node_height << std::endl;
+
     if( head->right == nullptr ) {
         Node_S<T>* tmp = head;
         while(tmp->down != nullptr) { tmp = tmp->down; }
-        tmp->insert_node(node2, nullptr, hh, 1);
+        tmp->insert_node(node2, nullptr, node_height, 1);
 
     }
     else {
-        head->find(node2)->insert_node(node2, nullptr, hh, 1);
+        head->find(node2)->insert_node(node2, nullptr, node_height, 1);
     }
 }
 
@@ -79,15 +82,22 @@ int SkipList<T>::get_element_rank(const T& value){
 template<class T>
 void SkipList<T>::show_list() const {
     std::cout<<std::endl<<"SKIP LIST:\n";
-    auto node = head;
-    while (node->down != nullptr) {
-        node = node->down;
+    auto node1 = head;
+    auto node2 = head;
+    while (node1->down != nullptr) {
+        node2 = node1;
+        while (node2->right != nullptr) {
+            std::cout << node2->k << "   ->   ";
+            node2 = node2->right;
+        }
+        std::cout << node2->k<<std::endl;
+        node1 = node1->down;
     }
-    //node = node->right; <- raczej nie potrzebnee
-    while (node->right != nullptr) {
-        std::cout << node->k << "  ";
-        node = node->right;
+    node2 = node1;
+    while (node2->right != nullptr) {
+        std::cout << node2->k << "   ->   ";
+        node2 = node2->right;
     }
-    std::cout << node->k << "  ";
+    std::cout << node2->k<<std::endl;
     std::cout << std::endl;
 }

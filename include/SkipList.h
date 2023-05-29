@@ -6,6 +6,7 @@
 #define STRUKTURY_DANYCH_SKIPLIST_H
 
 #include <memory>
+#include <random>
 #include <iostream>
 #include "Node_S.h"
 #include "../src/Node_S.cpp"
@@ -28,6 +29,8 @@ public:
 private:
     Node_S<T>* head;
     int height;
+    std::random_device rd;
+    std::mt19937 rand{ rd() };
 };
 
 
