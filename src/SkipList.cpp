@@ -39,17 +39,18 @@ void SkipList<T>::insert_element(const T& value){
     // node_height -> random values
     std::uniform_int_distribution<int> dis(1, height);
     int node_height = dis(rand);
-    std::cout << "poziom: " << node_height << std::endl;
+    std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
     Node_S<T>* tmp = head;
     while(tmp->down != nullptr){
         tmp = tmp->down;
     }
-    if( tmp->right == nullptr and tmp) {
+    if( tmp->right == nullptr) {
         tmp->insert_node(node2, nullptr, node_height, 1);
     }
     else {
         head->find(node2)->insert_node(node2, nullptr, node_height, 1);
     }
+    tmp->update_distance(head->find(node2), node2, node_height);
 }
 
 
@@ -81,14 +82,22 @@ int SkipList<T>::get_element_rank(const T& value){
 }
 
 template<class T>
-void SkipList<T>::show_list() const {
+void SkipList<T>::show_list(){
     std::cout<<std::endl<<"SKIP LIST:\n";
     auto node1 = head;
     auto node2 = node1;
+    int length1 = 0;
+    int length2 = 0;
     while (node1->down != nullptr) {
         node2 = node1;
         while (node2->right != nullptr) {
-            std::cout << node2->k << "   ->   ";
+            std::cout << node2->k <<"  ";
+            length1 = node2->right->left_distance;
+            length2 = length1;
+            for(int i = 0; i <= length1 ; i++)
+                for(int ij = 0; ij <= ((length1 <= 2) ? 1 : length2-2); ij++)
+                    std::cout<<"--";
+            std::cout<<">  ";
             node2 = node2->right;
         }
         std::cout << node2->k<<std::endl;
@@ -96,7 +105,13 @@ void SkipList<T>::show_list() const {
     }
     node2 = node1;
     while (node2->right != nullptr) {
-        std::cout << node2->k << "   ->   ";
+        std::cout << node2->k <<"  ";
+        length1 = node2->left_distance;
+        length2 = length1 ;
+        for(int i = 0; i <= length1 ; i++)
+            for(int ij = 0; ij <= ((length1 <= 2) ? 1 : length2-2) ; ij++)
+                std::cout<<"--";
+        std::cout<<">  ";
         node2 = node2->right;
     }
     std::cout << node2->k<<std::endl;

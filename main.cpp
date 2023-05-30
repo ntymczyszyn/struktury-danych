@@ -14,8 +14,6 @@ void skip_list(){
 
     skip_list.insert_element(5);
     skip_list.insert_element(20);
-    skip_list.show_list();
-    std::cout<<std::endl;
     skip_list.insert_element(34);
     skip_list.show_list();
     std::cout<<std::endl;
@@ -23,9 +21,9 @@ void skip_list(){
     skip_list.insert_element(10);
 
     skip_list.show_list();
-    std::cout<<std::endl;
+    std::cout<<"MIEJSCE: "<<skip_list.get_element_rank(10) <<std::endl;
 
-    //skip_list.remove_element(20);
+//    skip_list.remove_element(20);
 
 //    skip_list.show_list();
 //    std::cout<<std::endl;

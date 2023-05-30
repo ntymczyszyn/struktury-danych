@@ -24,7 +24,7 @@ public:
     void remove_element(const T& value);
     int get_element_rank(const T& value);
 
-    void show_list() const;
+    void show_list();
 
 private:
     Node_S<T>* head;

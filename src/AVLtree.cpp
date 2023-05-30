@@ -79,6 +79,7 @@ bool AVLtree<T>::contains(Node<T>* node, const T& value) {
         std::cout << "WARTOSC JUZ ISTNIEJE " << value << std::endl;
         return true;
     }
+    return false; //nie wiem czy potrzebne i musi być, ale nie ma warningów
 }
 
 template<typename T>
