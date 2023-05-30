@@ -10,7 +10,7 @@ using namespace std;
 // SKIP LIST IMPLEMENTATION
 
 template< class T >//bez tail bo nie potrzebne tylko problemy powstaja
-SkipList<T>::SkipList(const T& value): height(3){
+SkipList<T>::SkipList(const T& value): height(5){
     head = new Node_S<T> (value);
     Node_S<T>* temp_left = head;
     for( int i = 0; i < height ; i++) {
@@ -18,13 +18,14 @@ SkipList<T>::SkipList(const T& value): height(3){
         temp_left->down = tmp;
         temp_left->down->up = temp_left;
         temp_left->left_distance = 0;
+        temp_left->height = height - i - 1;
         temp_left = temp_left->down;
     }
     temp_left->up->down = nullptr;
 }
 
 template< class T > // aby tworzyć listę bez elementów;
-SkipList<T>::SkipList(): height(3), head(nullptr){ //}, tail(nullptr){
+SkipList<T>::SkipList(): height(5), head(nullptr){ //}, tail(nullptr){
 
 }
 
@@ -36,15 +37,15 @@ template< class T >
 void SkipList<T>::insert_element(const T& value){
     Node_S<T>* node2 = new Node_S<T> (value);
     // node_height -> random values
-    std::uniform_int_distribution<int> dis(1, 3);
+    std::uniform_int_distribution<int> dis(1, height);
     int node_height = dis(rand);
     std::cout << "poziom: " << node_height << std::endl;
-
-    if( head->right == nullptr ) {
-        Node_S<T>* tmp = head;
-        while(tmp->down != nullptr) { tmp = tmp->down; }
+    Node_S<T>* tmp = head;
+    while(tmp->down != nullptr){
+        tmp = tmp->down;
+    }
+    if( tmp->right == nullptr and tmp) {
         tmp->insert_node(node2, nullptr, node_height, 1);
-
     }
     else {
         head->find(node2)->insert_node(node2, nullptr, node_height, 1);
@@ -83,7 +84,7 @@ template<class T>
 void SkipList<T>::show_list() const {
     std::cout<<std::endl<<"SKIP LIST:\n";
     auto node1 = head;
-    auto node2 = head;
+    auto node2 = node1;
     while (node1->down != nullptr) {
         node2 = node1;
         while (node2->right != nullptr) {

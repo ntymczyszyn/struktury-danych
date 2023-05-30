@@ -9,21 +9,26 @@ void skip_list(){
     constexpr int test{1};
     SkipList<int> skip_list(test);
 
+
     std::cout<<std::endl;
 
     skip_list.insert_element(5);
     skip_list.insert_element(20);
+    skip_list.show_list();
+    std::cout<<std::endl;
     skip_list.insert_element(34);
+    skip_list.show_list();
+    std::cout<<std::endl;
     skip_list.insert_element(3);
     skip_list.insert_element(10);
 
     skip_list.show_list();
     std::cout<<std::endl;
 
-    skip_list.remove_element(20);
+    //skip_list.remove_element(20);
 
-    skip_list.show_list();
-    std::cout<<std::endl;
+//    skip_list.show_list();
+//    std::cout<<std::endl;
 
 /*
     skip_list.insert_element(5);

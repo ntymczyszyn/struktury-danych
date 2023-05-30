@@ -27,9 +27,9 @@ int Node_S<T>::compare_keys(Node_S<T>* node2){
 }
 
 // Find node of specified key in List -> searching for the key value in List
-template< class T >
+template< class T >  // trzeba zrobić dodawanie na ostatnim miejscu
 Node_S<T>* Node_S<T>::find(Node_S<T>* found){
-    if(right!=nullptr && found->compare_keys(right) >= 0 ) {// czy tylko >
+    if(right!=nullptr and found->compare_keys(right) > 0 ) {// czy tylko >
         return right->find(found);
     }
     else if(down != nullptr) {
@@ -43,7 +43,7 @@ template< class T >
 void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){
     if (height <= insert_height) {
         node2->left = this;
-        node2->right = right;
+        node2->right = this->right;
         node2->down = lower;
         if(right != nullptr) {
             right->left = node2;
@@ -57,32 +57,35 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
             node2->right->left_distance -= node2->left_distance - 1;
         }
         Node_S<T>* temp = this;
-        while (temp->up == nullptr) {
+        while (temp->up == nullptr and temp->left != nullptr) {
             distance += temp->left_distance;
-            if(temp->left == nullptr)
-                break;
             temp = temp->left;
         }
         // coś mi tutaj nie pasuje
         if(temp->up != nullptr) {
+            //Node_S<T>* node = new Node_S<T> (node2->k);  <- tworzenie nowego bo jakies głupoty powstaja
             temp = temp->up;
-            temp->height++;   //potrzebne??
-            temp->insert_node(node2, node2->down, insert_height, distance); //może tak byc??
+            temp->insert_node(new Node_S<T> (node2->k), node2, insert_height, distance); //może tak byc??
         }
 
         //delete temp;
     }
     else {
         Node_S<T>* temp = this;
-        temp->right->left_distance++;
+        if(temp->right != nullptr) {
+            temp->right->left_distance++;
+        }
         // wyznaczanie odległości na każdej z wysokości od kolejnych elementów
-        while (temp->left != nullptr or temp->up != nullptr) {
+        while (temp->left != nullptr or temp->up != nullptr ) {
             while (temp->up == nullptr) {
                 temp = temp->left;
             }
             temp = temp->up;
-            temp->right->left_distance++;
+            if(temp->right != nullptr) {
+                temp->right->left_distance++;
+            }
         }
+        //tworzenie fukncji zamiast elsa zeby wchodziło gdy wysokosc jest za duzoo
         //delete temp; //można tak?
     }
 }
