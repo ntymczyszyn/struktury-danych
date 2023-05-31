@@ -8,6 +8,7 @@
 #include <memory>
 #include <random>
 #include <iostream>
+#include <climits>
 #include "Node_S.h"
 #include "../src/Node_S.cpp"
 // to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
@@ -16,7 +17,6 @@
 template< class T >
 class SkipList {
 public:
-    explicit SkipList(const T& value);
     SkipList();
     ~SkipList();
 

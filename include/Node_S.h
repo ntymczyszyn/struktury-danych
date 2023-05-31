@@ -27,10 +27,11 @@ public:
     Node_S<T>* find(Node_S<T>* f);
 
     void insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance);
-    void update_distance(Node_S<T>* temp, Node_S<T>* node2, int insert_height);
-    void remove_node(Node_S<T>* node2);
+    void update_distance(Node_S<T>* temp, Node_S<T>* node2); // do zmian
+    void remove_node();
 
 };
+
 
 
 

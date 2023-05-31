@@ -7,26 +7,25 @@
 // funkcje do sprawdzenia działania kodu
 void skip_list(){
     constexpr int test{1};
-    SkipList<int> skip_list(test);
+    SkipList<int> skip_list;
 
 
     std::cout<<std::endl;
 
+    skip_list.insert_element(2);
     skip_list.insert_element(5);
     skip_list.insert_element(20);
     skip_list.insert_element(34);
-    skip_list.show_list();
-    std::cout<<std::endl;
+    skip_list.insert_element(1);
     skip_list.insert_element(3);
     skip_list.insert_element(10);
 
     skip_list.show_list();
-    std::cout<<"MIEJSCE: "<<skip_list.get_element_rank(10) <<std::endl;
 
-//    skip_list.remove_element(20);
+    skip_list.remove_element(20);
 
-//    skip_list.show_list();
-//    std::cout<<std::endl;
+    skip_list.show_list();
+    std::cout<<std::endl;
 
 /*
     skip_list.insert_element(5);
