@@ -6,46 +6,28 @@
 
 // funkcje do sprawdzenia działania kodu
 void skip_list(){
-    constexpr int test{1};
-    SkipList<int> skip_list;
+    constexpr int chosenHeight{5};
+    SkipList<int> skip_list(chosenHeight);
 
 
     std::cout<<std::endl;
 
-    skip_list.insert_element(2);
-    skip_list.insert_element(5);
-    skip_list.insert_element(20);
-    skip_list.insert_element(34);
-    skip_list.insert_element(1);
-    skip_list.insert_element(3);
-    skip_list.insert_element(10);
+    for (int i = 0; i < 100; i++) {
+        skip_list.insert_element(10 - i);
+    }
 
     skip_list.show_list();
 
-    skip_list.remove_element(20);
+    //skip_list.remove_element(20);
 
-    skip_list.show_list();
-    std::cout<<std::endl;
+    //skip_list.show_list();
+    std::cout<<"OK"<<std::endl;
 
-/*
-    skip_list.insert_element(5);
-    skip_list.insert_element(10);
-    skip_list.insert_element(3);
-    skip_list.insert_element(7);
-    skip_list.insert_element(1);
+    //skip_list.remove_element(3);
 
-    std::cout << "Rank of 5: " << skip_list.get_element_rank(5) << std::endl;
-    std::cout << "Rank of 10: " << skip_list.get_element_rank(10) << std::endl;
-    std::cout << "Rank of 3: " << skip_list.get_element_rank(3) << std::endl;
-    std::cout << "Rank of 7: " << skip_list.get_element_rank(7) << std::endl;
-    std::cout << "Rank of 1: " << skip_list.get_element_rank(1) << std::endl;
+    //skip_list.show_list();
+    //std::cout<<std::endl;
 
-    skip_list.remove_element(3);
-
-    std::cout << "Rank of 3 after removal: " << skip_list.get_element_rank(3) << std::endl;
-
-    skip_list.show_list();
-    */
 }
 
 void AVL_tree(){
@@ -55,10 +37,11 @@ void AVL_tree(){
     Tree.insert(7);
     Tree.insert(1);
     Tree.insert(6);
-    Tree.insert(3);
+    Tree.insert(-4);
 
-    for (int i = 0; i < 20; i++) {
-        Tree.insert(5 - i);
+    for (int i = 0; i < 10; i++) {
+        if (5 - i != 0)
+            Tree.insert(5 - i);
     }
     Tree.insert(-5);
     Tree.displayBinaryTree(Tree.root, "", true);
@@ -66,8 +49,8 @@ void AVL_tree(){
 
 int main(){
 
-    skip_list();
-    //AVL_tree();
+    //skip_list();
+    AVL_tree();
     return 0;
 }
 

@@ -62,7 +62,7 @@ bool AVLtree<T>::remove(const T& value) {
 }
 
 template<typename T>
-bool AVLtree<T>::contains(Node<T>* node, const T& value) {
+bool AVLtree<T>::contains(Node<T>* node, const T& value) { //trzeba poprawić, bo omija 0 !!!
     if (node == nullptr) {
         return false;
     }

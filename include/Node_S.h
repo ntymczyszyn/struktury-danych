@@ -34,5 +34,4 @@ public:
 
 
 
-
 #endif//STRUKTURY_DANYCH_NODE_S_H

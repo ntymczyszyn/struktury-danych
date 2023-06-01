@@ -3,16 +3,15 @@
 //
 
 #include "../include/Node_S.h"
-
+#include <limits>
 
 // NODE IMPLEMENTATION
+template<class T>
+Node_S<T>::Node_S():k(std::numeric_limits<int>::min()), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
+}
 
 template< class T >
-Node_S<T>::Node_S(const T& keeey): k(keeey){
-    left = nullptr;
-    right = nullptr;
-    up = nullptr;
-    down = nullptr;
+Node_S<T>::Node_S(const T& keeey): k(keeey), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
 }
 
 template< class T > //TODO usuwanie wskaznikow
@@ -23,7 +22,18 @@ Node_S<T>::~Node_S(){
 // compare values of element in the list/nodes
 template< class T >
 int Node_S<T>::compare_keys(Node_S<T>* node2){
-    return abs(this->k) - abs(node2->k);
+    if(this->k >= 0 and node2->k >= 0) {
+        return this->k - node2->k;
+    }
+    else if(this->k < 0 and node2->k >= 0) {
+        return -1;
+    }
+    else if(this->k >= 0 and node2->k < 0) {
+        return 1;
+    }
+    else {
+        return this->k - node2->k;
+    }
 }
 
 // Find node of specified key in List -> searching for the less key value in List (element before)

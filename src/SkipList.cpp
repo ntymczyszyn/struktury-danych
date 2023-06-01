@@ -6,15 +6,18 @@
 using namespace std;
 
 
-
 // SKIP LIST IMPLEMENTATION
+template<class T>
+SkipList<T>::SkipList() {
+
+}
 
 template< class T >//bez tail bo nie potrzebne tylko problemy powstaja
-SkipList<T>::SkipList(): height(5){
-    head = new Node_S<T> (INT_MIN);
-    Node_S<T>* temp_left = head;
+SkipList<T>::SkipList(int height_): height(height_){
+    head = new Node_S<T>();
+    Node_S<T>* temp_left{head};
     for( int i = 0; i < height ; i++) {
-        auto tmp = new Node_S<T>(INT_MIN);
+        auto tmp = new Node_S<T>();
         temp_left->down = tmp;
         temp_left->down->up = temp_left;
         temp_left->left_distance = 0;
@@ -34,7 +37,7 @@ void SkipList<T>::insert_element(const T& value){
     // node_height -> random values
     std::uniform_int_distribution<int> dis(1, height);
     int node_height = dis(rand);
-    std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
+    //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
     Node_S<T>* tmp = head;
     while(tmp->down != nullptr){
         tmp = tmp->down;
