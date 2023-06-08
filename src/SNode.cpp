@@ -2,26 +2,26 @@
 // Created by Natalia on 18.05.2023.
 //
 
-#include "../include/Node_S.h"
+#include "../include/SNode.h"
 #include <limits>
 
 // NODE IMPLEMENTATION
 template<class T>
-Node_S<T>::Node_S():k(std::numeric_limits<int>::min()), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
+SNode<T>::SNode():k(std::numeric_limits<int>::min()), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
 }
 
 template< class T >
-Node_S<T>::Node_S(const T& keeey): k(keeey), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
+SNode<T>::SNode(const T& keeey): k(keeey), left(nullptr), right(nullptr), up(nullptr), down(nullptr){
 }
 
 template< class T > //TODO usuwanie wskaznikow
-Node_S<T>::~Node_S(){
+SNode<T>::~SNode(){
     // delete node;
 }
 
 // compare values of element in the list/nodes
 template< class T >
-int Node_S<T>::compare_keys(Node_S<T>* node2){
+int SNode<T>::compare_keys(SNode<T>* node2){
     if(this->k >= 0 and node2->k >= 0) {
         return this->k - node2->k;
     }
@@ -38,7 +38,7 @@ int Node_S<T>::compare_keys(Node_S<T>* node2){
 
 // Find node of specified key in List -> searching for the less key value in List (element before)
 template< class T >
-Node_S<T>* Node_S<T>::find(Node_S<T>* found){
+SNode<T>*SNode<T>::find(SNode<T>* found){
     if(right!=nullptr and found->compare_keys(right) > 0 ) {
         return right->find(found);
     }
@@ -50,7 +50,7 @@ Node_S<T>* Node_S<T>::find(Node_S<T>* found){
 
 // Update distance between nodes
 template<class T>
-void Node_S<T>::update_distance(Node_S<T>* temp, Node_S<T>* node2) {
+void SNode<T>::update_distance(SNode<T>* temp, SNode<T>* node2) {
     int v = 0;
     while(temp != nullptr){
         if(v == 0 and temp->right != nullptr and temp->right->k == node2->k){
@@ -71,9 +71,9 @@ void Node_S<T>::update_distance(Node_S<T>* temp, Node_S<T>* node2) {
     return;
 }
 
-// Insert Node
+// Insert AVLNode
 template< class T >
-void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_height, int distance){
+void SNode<T>::insert_node(SNode<T>* node2, SNode<T>* lower, int insert_height, int distance){
     if (height < insert_height) {
         node2->left = this;
         node2->right = this->right;
@@ -89,20 +89,20 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
 //        if(node2->right != nullptr) {
 //            node2->right->left_distance -= node2->left_distance - 1;
 //        }
-        Node_S<T>* temp = this;
+        SNode<T>* temp = this;
         while (temp->up == nullptr and temp->left != nullptr) {
             distance += temp->left_distance;
             temp = temp->left;
         }
         if(temp->up != nullptr) {
             temp = temp->up;
-            temp->insert_node(new Node_S<T> (node2->k), node2, insert_height, distance);
+            temp->insert_node(new SNode<T> (node2->k), node2, insert_height, distance);
         }
 
         //delete temp;
     }
 //    else {
-//        Node_S<T>* temp = this;
+//        SNode<T>* temp = this;
 //        if(temp->right != nullptr) {
 //            temp->right->left_distance++;
 //        }
@@ -121,11 +121,11 @@ void Node_S<T>::insert_node(Node_S<T>* node2, Node_S<T>* lower, int insert_heigh
 
 }
 
-// Remove Node
+// Remove AVLNode
 template<class T>
-void Node_S<T>::remove_node() {
+void SNode<T>::remove_node() {
     //removing node
-    Node_S<T>* temp = this;
+    SNode<T>* temp = this;
     while (temp->up != nullptr) {
         if(temp->left != nullptr) {temp->left->right = temp->right; }
         if(temp->right!= nullptr) {

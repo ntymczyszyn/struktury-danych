@@ -37,14 +37,18 @@ void AVL_tree(){
     Tree.insert(7);
     Tree.insert(1);
     Tree.insert(6);
-    Tree.insert(-4);
-
-    for (int i = 0; i < 10; i++) {
-        if (5 - i != 0)
-            Tree.insert(5 - i);
-    }
-    Tree.insert(-5);
+    Tree.insert(0);
+    Tree.insert(4);
+    Tree.insert(0);
+//    for (int i = 0; i < 10; i++) {
+//        if (5 - i != 0)
+//            Tree.insert(5 - i);
+//    }
+    //Tree.insert(-5);
     Tree.displayBinaryTree(Tree.root, "", true);
+    Tree.remove(6);
+    Tree.displayBinaryTree(Tree.root, "", true);
+
 }
 
 int main(){

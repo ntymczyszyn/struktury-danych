@@ -1,47 +1,42 @@
-//
-// Created by antalix on 20.04.23.
-//
-
 #ifndef STRUKTURY_DANYCH_AVLTREE_H
 #define STRUKTURY_DANYCH_AVLTREE_H
 
-#include <iostream>
-#include <memory>
-#include "Node.h"
-#include "../src/Node.cpp"
+#include "../src/AVLNode.cpp"
+#include "AVLNode.h"
+#include <string>
 
 template < typename T>
 class AVLtree {
 public:
     AVLtree();
     ~AVLtree();
-    Node<T>* root;
-    int node_count;
+
+    AVLNode<T>* root;
+    int nodeCount;
     int height() const;
     int size() const;
-    bool isEmpty() const;
-    bool contains(const T& value);
+    bool find(const T& value);
     bool insert(const T& value);
     bool remove(const T& value);
-    void displayBinaryTree(Node<T> *root, std::string indent, bool last);
+    void displayBinaryTree(AVLNode<T> *root, std::string indent, bool last);
 
 private:
-    friend class Node<T>;  // <-nie jestem pewna czy ma być
+    friend class AVLNode<T>;  // <-nie jestem pewna czy ma być
 
-    bool contains(Node<T>* node, const T& value);
-    auto insert(Node<T>* node, const T& value);
-    auto remove(Node<T>* node, const T& value);
+    bool find(AVLNode<T>* node, const T& value);
+    auto insert(AVLNode<T>* node, const T& value);
+    AVLNode<T>* remove(AVLNode<T>* node, const T& value);
 
-    void update(Node<T>* node);
-    auto balance(Node<T>* node);
-    auto left_left_case(Node<T>* node);
-    auto left_right_case(Node<T>* node);
-    auto right_left_case(Node<T>* node);
-    auto right_right_case(Node<T>* node);
-    auto left_rotation(Node<T>* node);
-    auto right_rotation(Node<T>* node);
-    T find_min(Node<T>* node) const;
-    T find_max(Node<T>* node) const;
+    void update(AVLNode<T>* node);
+    auto balance(AVLNode<T>* node);
+    auto leftLeftCase(AVLNode<T>* node);
+    auto leftRightCase(AVLNode<T>* node);
+    auto rightLeftCase(AVLNode<T>* node);
+    auto rightRightCase(AVLNode<T>* node);
+    auto leftRotation(AVLNode<T>* node);
+    auto rightRotation(AVLNode<T>* node);
+    AVLNode<T>* findMin(AVLNode<T>* node) const;
+    AVLNode<T>* findMax(AVLNode<T>* node) const;
 };
 
 

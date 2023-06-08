@@ -14,10 +14,10 @@ SkipList<T>::SkipList() {
 
 template< class T >//bez tail bo nie potrzebne tylko problemy powstaja
 SkipList<T>::SkipList(int height_): height(height_){
-    head = new Node_S<T>();
-    Node_S<T>* temp_left{head};
+    head = new SNode<T>();
+    SNode<T>* temp_left{head};
     for( int i = 0; i < height ; i++) {
-        auto tmp = new Node_S<T>();
+        auto tmp = new SNode<T>();
         temp_left->down = tmp;
         temp_left->down->up = temp_left;
         temp_left->left_distance = 0;
@@ -33,12 +33,12 @@ SkipList<T>::~SkipList()= default;  //TODO usuwanie wskaznikow
 
 template< class T >
 void SkipList<T>::insert_element(const T& value){
-    Node_S<T>* node2 = new Node_S<T> (value);
+    SNode<T>* node2 = new SNode<T> (value);
     // node_height -> random values
     std::uniform_int_distribution<int> dis(1, height);
     int node_height = dis(rand);
     //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
-    Node_S<T>* tmp = head;
+    SNode<T>* tmp = head;
     while(tmp->down != nullptr){
         tmp = tmp->down;
     }
@@ -54,7 +54,7 @@ void SkipList<T>::insert_element(const T& value){
 
 template< class T >
 void SkipList<T>::remove_element(const T& value){
-    Node_S<T>* node2 = new Node_S<T> (value);
+    SNode<T>* node2 = new SNode<T> (value);
     if (head->find(node2)->right != nullptr) {
         head->find(node2)->right->remove_node();
     } else {
@@ -66,8 +66,8 @@ void SkipList<T>::remove_element(const T& value){
 // generate position of node in list based on the distance between nodes -> amount of keys with less value
 template< class T >
 int SkipList<T>::get_element_rank(const T& value){
-    Node_S<T>* node2 = new Node_S<T> (value);
-    Node_S<T>* temp = head->find(node2);
+    SNode<T>* node2 = new SNode<T> (value);
+    SNode<T>* temp = head->find(node2);
     if (temp->right == nullptr or temp->right->k != value) {
         return -1;
     }

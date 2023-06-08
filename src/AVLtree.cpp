@@ -1,17 +1,19 @@
-//
-// Created by antalix on 20.04.23.
-//
-
 #include "../include/AVLtree.h"
 #include <iostream>
-#include <queue>
-#include <cmath>
+
 template<typename T>
-AVLtree<T>::AVLtree(): root(nullptr) {
+AVLtree<T>::AVLtree(): root(nullptr), nodeCount(0) {
 }
 
 template<typename T>
 AVLtree<T>::~AVLtree() {
+    AVLNode<T>* toDelete{};
+    while(root != nullptr){
+        toDelete = findMin(root);
+        //std::cout << "Removing " << toDelete->value << std::endl;
+        remove(toDelete->value);
+        //displayBinaryTree(root, "", true);
+    }
 }
 
 template<typename T>
@@ -24,25 +26,20 @@ int AVLtree<T>::height() const {
 
 template<typename T>
 int AVLtree<T>::size() const {
-    return node_count;
+    return nodeCount;
 }
 
 template<typename T>
-bool AVLtree<T>::isEmpty() const {
-    return this->size() == 0;
-}
-
-template<typename T>
-bool AVLtree<T>::contains(const T& value) {
-    return contains(root, value);
+bool AVLtree<T>::find(const T& value) {
+    return find(root, value);
 }
 
 template<typename T>
 bool AVLtree<T>::insert(const T& value) {
-    if (!contains(root, value)) {
+    if (!find(root, value)) {
         std::cout << "DODAWANIE " << value << std::endl;
         root = insert(root, value);
-        node_count++;
+        nodeCount++;
         return true;
     }
     return false;
@@ -50,30 +47,26 @@ bool AVLtree<T>::insert(const T& value) {
 
 template<typename T>
 bool AVLtree<T>::remove(const T& value) {
-    if (value == nullptr ) {
-        return false;
-    }
-    if (contains(root, value)) {
+    if (find(root, value)) {
         root = remove(root, value);
-        node_count--;
+        nodeCount--;
         return true;
     }
     return false;
 }
 
 template<typename T>
-bool AVLtree<T>::contains(Node<T>* node, const T& value) { //trzeba poprawić, bo omija 0 !!!
+bool AVLtree<T>::find(AVLNode<T>* node, const T& value) { //trzeba poprawić, bo omija 0 !!!
     if (node == nullptr) {
         return false;
     }
     T cmp = node->compareTo(value);
-    // get into left subtree
-    if (cmp > 0) {
-        return contains(node->left, value);
+
+    if (cmp < 0) {
+        return find(node->left, value);
     }
-    // get into  right subtree
-    else if (cmp < 0) {
-        return contains(node->right, value);
+    else if (cmp > 0) {
+        return find(node->right, value);
     }
     else if (cmp == 0) {
         std::cout << "WARTOSC JUZ ISTNIEJE " << value << std::endl;
@@ -83,16 +76,16 @@ bool AVLtree<T>::contains(Node<T>* node, const T& value) { //trzeba poprawić, b
 }
 
 template<typename T>
-auto AVLtree<T>::insert(Node<T>* node, const T& value) {
+auto AVLtree<T>::insert(AVLNode<T>* node, const T& value) {
     if (node == nullptr) {
-        return new Node<T> (value);
+        return new AVLNode<T> (value);
     }
     T cmp = node->compareTo(value);
-    // Insert node into the proper subtree
-    if (cmp > 0) {
+
+    if (cmp < 0) {
         node->left = insert(node->left, value);
     }
-    else if (cmp < 0) {
+    else if (cmp > 0) {
         node->right = insert(node->right, value);
     }
     update(node);
@@ -100,34 +93,38 @@ auto AVLtree<T>::insert(Node<T>* node, const T& value) {
 }
 
 template<typename T>
-auto AVLtree<T>::remove(Node<T>* node, const T& value) {
+AVLNode<T>* AVLtree<T>::remove(AVLNode<T>* node, const T& value) {
     if(node == nullptr) {
         return nullptr;
     }
     T cmp = node->compareTo(value);
-    if (cmp > 0) {
+    if (cmp < 0) {
         node->left = remove(node->left, value);
     }
-    else if (cmp < 0) {
+    else if (cmp > 0) {
         node->right = remove(node->right, value);
     }
     else {
         if (node->left == nullptr) {
-            return node->right;
+            AVLNode<T>* temp = node->right;
+            delete node;
+            return temp;
         }
         else if (node->right == nullptr) {
-            return node->left;
+            AVLNode<T>* temp = node->left;
+            delete node;
+            return temp;
         }
         else {
             if (node->left->height > node->right->height) {
-                T successor_value = find_max(node->left);
-                node->value = successor_value;
-                node->left = remove(node->left, successor_value);
+                AVLNode<T>* temp = findMax(node->left);
+                node->value = temp->value;
+                node->left = remove(node->left, temp->value);
             }
             else {
-                T successor_value = find_min(node->left);
-                node->value = successor_value;
-                node->right = remove(node->right, successor_value);
+                AVLNode<T>* temp = findMin(node->right); // Find the minimum value node in the right subtree
+                node->value = temp->value; // Replace the node's value with the found node's value
+                node->right = remove(node->right, temp->value);  // Remove the found node from the subtree
             }
         }
     }
@@ -136,7 +133,7 @@ auto AVLtree<T>::remove(Node<T>* node, const T& value) {
 }
 
 template<typename T>
-void AVLtree<T>::update(Node<T>* node) {
+void AVLtree<T>::update(AVLNode<T>* node) {
     int left_node_height = (node->left == nullptr) ? -1 : node->left->height;
     int right_node_height = (node->right == nullptr) ? -1 : node->right->height;
 
@@ -146,53 +143,53 @@ void AVLtree<T>::update(Node<T>* node) {
 }
 
 template<typename T>
-auto AVLtree<T>::balance(Node<T>* node) {
+auto AVLtree<T>::balance(AVLNode<T>* node) {
     // Left subtree is too heavy
     if (node->bf == -2) {
         if (node->left->bf <= 0) {
-            return left_left_case(node);
+            return leftLeftCase(node);
         }
         else {
-            return left_right_case(node);
+            return leftRightCase(node);
         }
     }
     // Right subtree is too heavy
     else if (node->bf == 2) {
         if (node->right->bf >= 0) {
-            return right_right_case(node);
+            return rightRightCase(node);
         }
         else {
-            return right_left_case(node);
+            return rightLeftCase(node);
         }
     }
     return node;
 }
 
 template<typename T>
-auto AVLtree<T>::left_left_case(Node<T>* node) {
-    return right_rotation(node);
+auto AVLtree<T>::leftLeftCase(AVLNode<T>* node) {
+    return rightRotation(node);
 }
 
 template<typename T>
-auto AVLtree<T>::left_right_case(Node<T>* node) {
-    node->left = left_rotation(node->left);
-    return left_left_case(node);
+auto AVLtree<T>::leftRightCase(AVLNode<T>* node) {
+    node->left = leftRotation(node->left);
+    return leftLeftCase(node);
 }
 
 template<typename T>
-auto AVLtree<T>::right_left_case(Node<T>* node) {
-    node->right = right_rotation(node->right);
-    return right_right_case(node);
+auto AVLtree<T>::rightLeftCase(AVLNode<T>* node) {
+    node->right = rightRotation(node->right);
+    return rightRightCase(node);
 }
 
 template<typename T>
-auto AVLtree<T>::right_right_case(Node<T>* node) {
-    return left_rotation(node);
+auto AVLtree<T>::rightRightCase(AVLNode<T>* node) {
+    return leftRotation(node);
 }
 
 template<typename T>
-auto AVLtree<T>::left_rotation(Node<T>* node) {
-    Node<T>* new_parent = node->right;
+auto AVLtree<T>::leftRotation(AVLNode<T>* node) {
+    AVLNode<T>* new_parent = node->right;
     node->right = new_parent->left;
     new_parent->left = node;
     update(node);
@@ -201,8 +198,8 @@ auto AVLtree<T>::left_rotation(Node<T>* node) {
 }
 
 template<typename T>
-auto AVLtree<T>::right_rotation(Node<T>* node) {
-    Node<T>* new_parent = node->left;
+auto AVLtree<T>::rightRotation(AVLNode<T>* node) {
+    AVLNode<T>* new_parent = node->left;
     node->left = new_parent->right;
     new_parent->right = node;
     update(node);
@@ -211,23 +208,23 @@ auto AVLtree<T>::right_rotation(Node<T>* node) {
 }
 
 template<typename T>
-T AVLtree<T>::find_min(Node<T>* node) const {
+AVLNode<T>* AVLtree<T>::findMin(AVLNode<T>* node) const {
     while (node->left != nullptr) {
         node = node->left;
     }
-    return node->value;
+    return node;
 }
 
 template<typename T>
-T AVLtree<T>::find_max(Node<T>* node) const {
+AVLNode<T>* AVLtree<T>::findMax(AVLNode<T>* node) const {
     while (node->right != nullptr) {
         node = node->right;
     }
-    return node->value;
+    return node;
 }
 
 template<typename T>
-void AVLtree<T>::displayBinaryTree(Node<T> *root, std::string indent, bool last) {
+void AVLtree<T>::displayBinaryTree(AVLNode<T>* root, std::string indent, bool last) {
     if (root == nullptr)
         return;
 

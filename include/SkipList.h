@@ -5,11 +5,11 @@
 #ifndef STRUKTURY_DANYCH_SKIPLIST_H
 #define STRUKTURY_DANYCH_SKIPLIST_H
 
+#include "../src/SNode.cpp"
+#include "SNode.h"
+#include <iostream>
 #include <memory>
 #include <random>
-#include <iostream>
-#include "Node_S.h"
-#include "../src/Node_S.cpp"
 // to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
 
 
@@ -27,7 +27,7 @@ public:
     void show_list();
 
 private:
-    Node_S<T>* head;
+    SNode<T>* head;
     int height;
     std::random_device rd;
     std::mt19937 rand{ rd() };
