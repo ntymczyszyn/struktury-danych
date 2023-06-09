@@ -3,15 +3,18 @@
 #include "../include/AVLtree.h"
 #include "../src/SkipList.cpp"
 #include "../src/AVLtree.cpp"
-
+#include <memory>
 #include <chrono>
 
+void AVL_test(int n);
+
 int main(){
+    // do dokończenia
     std::vector<Movie> movies;
     std::fstream testFile ("../wyniki4.csv", std::ios::app);
 
     std::vector<int> n {10, 100, 10000, 20000, 50000, 100000, 200000, 300000,
-                       400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1010293};
+                       400000, 500000, 600000, 700000, 800000, 900000, 1000000};
     // inserting
     // deleting
 
