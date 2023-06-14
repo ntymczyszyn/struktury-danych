@@ -69,7 +69,7 @@ bool AVLtree<T>::find(AVLNode<T>* node, const T& value) {
         return find(node->right, value);
     }
     else if (cmp == 0) {
-        std::cout << "WARTOSC JUZ ISTNIEJE " << value << std::endl;
+        //std::cout << "WARTOSC JUZ ISTNIEJE " << value << std::endl;
         return true;
     }
     return false; //nie wiem czy potrzebne i musi być, ale nie ma warningów
@@ -97,6 +97,8 @@ AVLNode<T>* AVLtree<T>::remove(AVLNode<T>* node, const T& value) {
     if(node == nullptr) {
         return nullptr;
     }
+    // trzeba zmienić miejsce tego cout
+    std::cout << "USUWANIE " << value << std::endl;
     T cmp = node->compareTo(value);
     if (cmp < 0) {
         node->left = remove(node->left, value);
