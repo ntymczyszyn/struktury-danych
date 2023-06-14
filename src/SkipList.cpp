@@ -147,9 +147,9 @@ void SkipList<T>::insert_node(SNode<T>* node, SNode<T>* nodeToAdd, SNode<T>* low
         nodeToAdd->height = node->height;
 // updating distance
         nodeToAdd->left_distance = distance;
-                if(nodeToAdd->right != nullptr and nodeToAdd->right->left_distance != 1) {
-                    nodeToAdd->right->left_distance -= nodeToAdd->left_distance - 1;
-                }
+        if(nodeToAdd->right != nullptr and nodeToAdd->right->left_distance != 1) {
+            nodeToAdd->right->left_distance -= nodeToAdd->left_distance - 1;
+        }
         SNode<T>* temp{node};
         while (temp->up == nullptr and temp->left != nullptr) {
             distance += temp->left_distance;
