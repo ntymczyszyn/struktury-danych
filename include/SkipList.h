@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <random>
+#include <string>
 // to nadal nie jest do końca dobrze, ale idzie w dobrym kierunku
 
 
@@ -29,6 +30,7 @@ private:
 
     SNode<T>* head;
     int height;
+    int amount_of_elements;
     std::random_device rd;
     std::mt19937 rand;
 };

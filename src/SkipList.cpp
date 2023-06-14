@@ -5,7 +5,7 @@ SkipList<T>::SkipList(): rand(rd()){ // czy my wgl z tego korzystamy????
 }
 
 template<class T> //bez tail bo nie potrzebne tylko problemy powstaja
-SkipList<T>::SkipList(int height_): head(new SNode<T>()), height(height_), rand(rd()){
+SkipList<T>::SkipList(int height_): head(new SNode<T>()), height(height_), rand(rd()), amount_of_elements(0){
     head->height = height;
     SNode<T>* temp_left{head};
 
@@ -30,24 +30,27 @@ void SkipList<T>::insert_element(const T& valueToAdd){
     // checking if exists !!!!!
 
     SNode<T>* newNode{new SNode<T> (valueToAdd)};
-
-    std::uniform_int_distribution<int> dis(1, height+1);
-    int node_height{dis(rand)};
-
-    //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
-    SNode<T>* currentNode{head};
-
-    while (currentNode->down != nullptr) {
-        currentNode = currentNode->down;
-    }
-
-    if (currentNode->right == nullptr) { // end of the list
-        insert_node(currentNode, newNode, nullptr, node_height, 1);
+    if(find(head, newNode)->right != nullptr and find(head, newNode)->right->value == valueToAdd) {
+        std::cout << "Value exists!\n";
     }
     else {
-        insert_node(find(currentNode, newNode), newNode, nullptr, node_height, 1);
-    }
+        amount_of_elements++;
+        std::uniform_int_distribution<int> dis(1, height + 1);
+        int node_height{dis(rand)};
 
+        //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
+        SNode<T> *currentNode{head};
+
+        while (currentNode->down != nullptr) {
+            currentNode = currentNode->down;
+        }
+
+        if (currentNode->right == nullptr) { // end of the list
+            insert_node(currentNode, newNode, nullptr, node_height, 1);
+        } else {
+            insert_node(find(currentNode, newNode), newNode, nullptr, node_height, 1);
+        }
+    }
 }
 
 template<class T>
@@ -55,6 +58,7 @@ void SkipList<T>::remove_element(const T& value){
     SNode<T>* node2{new SNode<T> (value)};
 
     if (find(head, node2)->right != nullptr) {
+        amount_of_elements--;
         remove_node(find(head, node2)->right);
     }
     else {
@@ -90,20 +94,20 @@ void SkipList<T>::show_list(){
     std::cout<<std::endl<<"SKIP LIST:\n";
     auto node1 = head;
     auto node2 = node1;
-    int length = 0;
-    int length2 = 0;
+    int length;
     while (node1->down != nullptr) {
         node2 = node1->right;
         std::cout<<"HEAD ";
 
         while (node2 != nullptr) {
             length = node2->left_distance;
-            for (int i = 0; i < length - 1 ; i++)
-                std::cout<<"-- ";
-            std::cout<<"-->  ";
-            std::cout << node2->value <<"("<<node2->left_distance<<") ";
+            for (int i = 0; i < length-1 ; i++)
+                std::cout<<" -----";
+            std::cout<<" --> ";
+            std::cout << node2->value;// <<"("<<node2->left_distance<<") ";
             node2 = node2->right;
         }
+
         std::cout<<std::endl;
         node1 = node1->down;
     }
@@ -111,8 +115,8 @@ void SkipList<T>::show_list(){
     std::cout<<"HEAD ";
 
     while (node2->right != nullptr) {
-        std::cout<<"-->  ";
-        std::cout << node2->right->value <<"  ";
+        std::cout<<" --> ";
+        std::cout << node2->right->value;
         node2 = node2->right;
     }
     std::cout << std::endl;
@@ -133,50 +137,63 @@ SNode<T>* SkipList<T>::find(SNode<T>* node, SNode<T>* nodeToFind){
 template< class T >
 void SkipList<T>::insert_node(SNode<T>* node, SNode<T>* nodeToAdd, SNode<T>* lower, int insert_height, int distance){
     std::cout << "insert_node" << std::endl;
-    if (node->height < insert_height) {
-        nodeToAdd->left = node;
-        nodeToAdd->right = node->right;
-        nodeToAdd->down = lower;
-        if(node->right != nullptr) {
-            node->right->left = nodeToAdd;
-        }
-        node->right = nodeToAdd;
-        if (lower != nullptr)
-            lower->up = nodeToAdd;
+    int h = 0, k = 0;
+    while(h <= height ) {
+        if (node->height < insert_height) {
+            nodeToAdd->left = node;
+            nodeToAdd->right = node->right;
+            nodeToAdd->down = lower;
+            if (node->right != nullptr) {
+                node->right->left = nodeToAdd;
+            }
+            node->right = nodeToAdd;
+            if (lower != nullptr)
+                lower->up = nodeToAdd;
 
-        nodeToAdd->height = node->height;
-// updating distance
-        nodeToAdd->left_distance = distance;
-        if(nodeToAdd->right != nullptr and nodeToAdd->right->left_distance != 1) {
-            nodeToAdd->right->left_distance -= nodeToAdd->left_distance - 1;
+            nodeToAdd->height = node->height;
+            // updating distance
+            nodeToAdd->left_distance = distance;
+            if (nodeToAdd->right != nullptr and nodeToAdd->right->left_distance != 1) {
+                nodeToAdd->right->left_distance -= nodeToAdd->left_distance - 1;
+            }
+            SNode<T> *temp{node};
+            while (temp->up == nullptr and temp->left != nullptr) {
+                distance += temp->left_distance;
+                temp = temp->left;
+            }
+            if (temp->up != nullptr) {
+                node = temp->up;
+                lower = nodeToAdd;
+                nodeToAdd = new SNode<T>(lower->value);
+                //insert_node(temp, new SNode<T>(nodeToAdd->value), nodeToAdd, insert_height, distance);
+            }
+        } else {
+            if(k == 0 and lower->right != nullptr) {
+                k=1;
+                update_distance(lower->right);
+            }
         }
-        SNode<T>* temp{node};
-        while (temp->up == nullptr and temp->left != nullptr) {
-            distance += temp->left_distance;
-            temp = temp->left;
-        }
-        if (temp->up != nullptr) {
-            temp = temp->up;
-            insert_node(temp, new SNode<T> (nodeToAdd->value), nodeToAdd, insert_height, distance);
-        }
+        ++h;
     }
-    else {
-        update_distance(nodeToAdd->right);
-    }
-
 }
+
 template<class T>
 void SkipList<T>::update_distance(SNode<T>* node) {
     SNode<T>* temp{node};
-    if (temp == nullptr)
-        return;
 
-    if (temp->up == nullptr)
-        update_distance(temp->right);
+    if (temp->up == nullptr) {
+        if (temp->right != nullptr) {
+            update_distance(temp->right);
+        }
+    }
     else {
         temp = temp->up;
         temp->left_distance++;
-        update_distance(temp->right);
+        if(temp->up != nullptr){
+            update_distance(temp);
+        }else if (temp->right != nullptr) {
+            update_distance(temp->right);
+        }
     }
 }
 
