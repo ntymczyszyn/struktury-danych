@@ -1,11 +1,8 @@
 #include "../include/SkipList.h"
 
-template<class T>
-SkipList<T>::SkipList(): rand(rd()){ // czy my wgl z tego korzystamy????
-}
 
 template<class T> //bez tail bo nie potrzebne tylko problemy powstaja
-SkipList<T>::SkipList(int height_): head(new SNode<T>()), height(height_), rand(rd()), amount_of_elements(0){
+SkipList<T>::SkipList(int height_): head(new SNode<T>()), height(height_), rand(rd()), numberOfElements(0){
     head->height = height;
     SNode<T>* temp_left{head};
 
@@ -21,25 +18,26 @@ SkipList<T>::SkipList(int height_): head(new SNode<T>()), height(height_), rand(
 
 template<class T>
 SkipList<T>::~SkipList(){
-
+    while (head->right != nullptr){
+        remove_node(head->right);
+    }
+    // usuwanie head
 };
 
 template<class T>
 void SkipList<T>::insert_element(const T& valueToAdd){
-
-    // checking if exists !!!!!
 
     SNode<T>* newNode{new SNode<T> (valueToAdd)};
     if(find(head, newNode)->right != nullptr and find(head, newNode)->right->value == valueToAdd) {
         std::cout << "Value exists!\n";
     }
     else {
-        amount_of_elements++;
+        numberOfElements++;
         std::uniform_int_distribution<int> dis(1, height + 1);
         int node_height{dis(rand)};
 
         //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
-        SNode<T> *currentNode{head};
+        SNode<T>* currentNode{head};
 
         while (currentNode->down != nullptr) {
             currentNode = currentNode->down;
@@ -57,23 +55,27 @@ template<class T>
 void SkipList<T>::remove_element(const T& value){
     SNode<T>* node2{new SNode<T> (value)};
 
+    // auto = find(head, node2)->right ??
     if (find(head, node2)->right != nullptr) {
-        amount_of_elements--;
+        numberOfElements--;
         remove_node(find(head, node2)->right);
     }
     else {
         std::cout << "Element not found";
     }
+    delete node2;
 }
 
 // generate position of node in list based on the distance between nodes -> amount of keys with less value
 template<class T>
 int SkipList<T>::get_element_rank(const T& value){
     SNode<T>* node2{new SNode<T> (value)};
+    // czy da się inaczej?? bez tej alokacji zasobów
     SNode<T>* temp{find(head, node2)};
 
     if (temp->right == nullptr or temp->right->value != value) {
-        return -1;
+        delete node2;
+        return -1; // when element not found
     }
     int distance_sum = 1;
 
@@ -81,10 +83,10 @@ int SkipList<T>::get_element_rank(const T& value){
         while (temp->up != nullptr) {
             temp = temp->up;
         }
-
         distance_sum += temp->left_distance;
         temp = temp->left;
     }
+    delete node2;
 
     return distance_sum;
 }
@@ -101,10 +103,10 @@ void SkipList<T>::show_list(){
 
         while (node2 != nullptr) {
             length = node2->left_distance;
-            for (int i = 0; i < length-1 ; i++)
+            for (int i = 0; i < length - 1 ; i++)
                 std::cout<<" -----";
             std::cout<<" --> ";
-            std::cout << node2->value;// <<"("<<node2->left_distance<<") ";
+            std::cout << node2->value <<"("<<node2->left_distance<<") ";
             node2 = node2->right;
         }
 
@@ -130,15 +132,15 @@ SNode<T>* SkipList<T>::find(SNode<T>* node, SNode<T>* nodeToFind){
     else if (node->down != nullptr) {
         return find(node->down, nodeToFind);
     }
-    std::cout << "nodeToFind" << std::endl;
+    //std::cout << "nodeToFind" << std::endl;
     return node;
 }
 
 template< class T >
 void SkipList<T>::insert_node(SNode<T>* node, SNode<T>* nodeToAdd, SNode<T>* lower, int insert_height, int distance){
-    std::cout << "insert_node" << std::endl;
+    //std::cout << "insert_node" << std::endl;
     int h = 0, k = 0;
-    while(h <= height ) {
+    while(h <= height) {
         if (node->height < insert_height) {
             nodeToAdd->left = node;
             nodeToAdd->right = node->right;
@@ -165,11 +167,12 @@ void SkipList<T>::insert_node(SNode<T>* node, SNode<T>* nodeToAdd, SNode<T>* low
                 node = temp->up;
                 lower = nodeToAdd;
                 nodeToAdd = new SNode<T>(lower->value);
+                // czemu to jest wykomentowane??
                 //insert_node(temp, new SNode<T>(nodeToAdd->value), nodeToAdd, insert_height, distance);
             }
         } else {
             if(k == 0 and lower->right != nullptr) {
-                k=1;
+                k = 1;
                 update_distance(lower->right);
             }
         }
@@ -202,20 +205,25 @@ void SkipList<T>::remove_node(SNode<T>* node) {
     //removing node
     SNode<T>* temp = node;
     while (temp->up != nullptr) {
-        if(temp->left != nullptr) {temp->left->right = temp->right; }
+        if(temp->left != nullptr) {
+            temp->left->right = temp->right;
+        }
         if(temp->right!= nullptr) {
             temp->right->left = temp->left;
             temp->right->left_distance += temp->left_distance - 1;
         }
+        delete temp;
         temp = temp->up;
     }
 
-    if(temp->left != nullptr) {temp->left->right = temp->right; }
+    if(temp->left != nullptr) {
+        temp->left->right = temp->right;
+    }
     if(temp->right != nullptr) {
         temp->right->left = temp->left;
         temp->right->left_distance += temp->left_distance - 1;
     }
-
+    delete temp;
     //updating distance
     while (temp->left != nullptr and temp->up != nullptr) {
         while (temp->up == nullptr and temp->left != nullptr) {
@@ -225,9 +233,7 @@ void SkipList<T>::remove_node(SNode<T>* node) {
             temp->right->left_distance--;
         temp = temp->up;
 
-        std::cout<<"remove  0\n";
+        //std::cout<<"remove  0\n";
     }
 
-    //    delete node2;
-    //    delete temp;
 }

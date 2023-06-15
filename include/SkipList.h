@@ -30,7 +30,7 @@ private:
 
     SNode<T>* head;
     int height;
-    int amount_of_elements;
+    int numberOfElements;
     std::random_device rd;
     std::mt19937 rand;
 };
