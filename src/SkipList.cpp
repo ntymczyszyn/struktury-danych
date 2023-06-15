@@ -29,7 +29,7 @@ void SkipList<T>::insert_element(const T& valueToAdd){
 
     SNode<T>* newNode{new SNode<T> (valueToAdd)};
     if(find(head, newNode)->right != nullptr and find(head, newNode)->right->value == valueToAdd) {
-        std::cout << "Value exists!\n";
+        //std::cout << "Value exists!\n";
     }
     else {
         numberOfElements++;
@@ -61,7 +61,7 @@ void SkipList<T>::remove_element(const T& value){
         remove_node(find(head, node2)->right);
     }
     else {
-        std::cout << "Element not found";
+        //std::cout << "Element not found";
     }
     delete node2;
 }

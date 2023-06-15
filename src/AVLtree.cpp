@@ -37,7 +37,7 @@ bool AVLtree<T>::find(const T& value) {
 template<typename T>
 bool AVLtree<T>::insert(const T& value) {
     if (!find(root, value)) {
-        std::cout << "DODAWANIE " << value << std::endl;
+        //std::cout << "DODAWANIE " << value << std::endl;
         root = insert(root, value);
         nodeCount++;
         return true;
@@ -98,7 +98,7 @@ AVLNode<T>* AVLtree<T>::remove(AVLNode<T>* node, const T& value) {
         return nullptr;
     }
     // trzeba zmienić miejsce tego cout
-    std::cout << "USUWANIE " << value << std::endl;
+    //std::cout << "USUWANIE " << value << std::endl;
     T cmp = node->compareTo(value);
     if (cmp < 0) {
         node->left = remove(node->left, value);
