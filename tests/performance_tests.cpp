@@ -6,14 +6,12 @@
 #include <chrono>
 #include <fstream>
 
-void AVL_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, std::ifstream& data);
-void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, std::ifstream& data);
+
+void AVL_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, int type);
+void skipList_test(int number, std::ofstream& results, std::ofstream& resultsDel, int type);
+
 
 int main(){
-    std::ifstream orderedData ("../tests/PN_ordered_numbers.csv");
-    std::ifstream reverseOrderedData ("../tests/PN_reversed_numbers.csv");
-    std::ifstream randomOrderedData ("../tests/PN_random_numbers.csv");
-
     std::ofstream resInOrderedAVL ("../tests/results/AVL/resultsPNOrderedIN.csv", std::ios::app);
     std::ofstream resInReverseOrderAVL("../tests/results/AVL/resultsPNReverseOrderIN.csv", std::ios::app);
     std::ofstream resInRandomOrderAVL ("../tests/results/AVL/resultsPNRandomOrderIN.csv", std::ios::app);
@@ -30,69 +28,118 @@ int main(){
     std::ofstream resDelReverseOrderSL("../tests/results/SL/resultsPNReverseOrderDEL.csv", std::ios::app);
     std::ofstream resDelRandomOrderSL ("../tests/results/SL/resultsPNRandomOrderDEL.csv", std::ios::app);
 
-
-    std::vector<int> n {10, 100, 10000, 20000, 50000, 100000, 200000};//, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    std::vector<int> nSL {10, 100, 500, 1000, 1500, 2000, 5000, 10000, 15000,  20000};//, 50000};//, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    std::vector<int> nAVL {10, 100, 500,  5000, 10000,  20000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
     std::vector<int> test {10, 20};
 
-    for (const auto& number : n){
-        AVL_test(number, resInOrderedAVL, resDelOrderedAVL, orderedData);
-        AVL_test(number, resInReverseOrderAVL,resDelReverseOrderAVL, reverseOrderedData);
-        AVL_test(number, resInRandomOrderAVL, resDelRandomOrderAVL, randomOrderedData);
-//        skipList_test(number, resInOrderedSL, resDelOrderedSL, orderedData);
-//        skipList_test(number, resInReverseOrderSL,resDelReverseOrderSL, reverseOrderedData);
-//        skipList_test(number, resInRandomOrderSL, resDelRandomOrderSL, randomOrderedData);
+    for (const auto& number : nSL){
+//        AVL_test(number, resInOrderedAVL, resDelOrderedAVL, 0);
+//        AVL_test(number, resInReverseOrderAVL,resDelReverseOrderAVL, 1);
+//        AVL_test(number, resInRandomOrderAVL, resDelRandomOrderAVL, 2);
+        skipList_test(number, resInOrderedSL, resDelOrderedSL, 0);
+        skipList_test(number, resInReverseOrderSL,resDelReverseOrderSL, 1);
+        skipList_test(number, resInRandomOrderSL, resDelRandomOrderSL, 2);
     }
 
     return 0;
 }
 
-void AVL_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, std::ifstream& data){
-    //data.open();
-    if(data.is_open() == true) {
-        std::unique_ptr<AVLtree<int>> Tree = std::make_unique<AVLtree<int>>();
-        int stream{};
-        auto duration_start = std::chrono::high_resolution_clock::now();
-        for (int i{0}; i < number; ++i) {
-            data >> stream;
-            Tree->insert(stream);
+void AVL_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, int type){
+    std::ifstream orderedData ("../tests/PN_ordered_numbers.csv");
+    std::ifstream reverseOrderedData ("../tests/PN_reversed_numbers.csv");
+    std::ifstream randomOrderedData ("../tests/PN_random_numbers.csv");
+
+    std::unique_ptr<AVLtree<int>> Tree = std::make_unique<AVLtree<int>>();
+    int stream{};
+    auto duration_start = std::chrono::high_resolution_clock::now();
+    for (int i{0}; i < number; ++i) {
+        switch (type){
+            case 0:
+                orderedData  >> stream;
+                break;
+            case 1:
+                reverseOrderedData  >> stream;
+                break;
+            case 2:
+                randomOrderedData  >> stream;
+                break;
         }
-        auto duration_end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
-        resultsIn << "AVL, " << "insertion, " << number << ", " << duration << "\n";
-// jaka kolejność usuwania??
-        duration_start = std::chrono::high_resolution_clock::now();
-        for (int i{0}; i < number; ++i) {
-            data >> stream;
-            Tree->remove(stream);
-        }
-        duration_end = std::chrono::high_resolution_clock::now();
-        duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
-        resultsDel << "AVL, " << "deletion, " << number << ", " << duration << "\n";
+        Tree->insert(stream);
     }
-    //data.close();
+    auto duration_end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
+    resultsIn << "AVL, " << "insertion, " << number << ", " << duration << "\n";
+    // wskaźnik na początek pliku
+    orderedData.seekg(0, std::ios::beg);
+    reverseOrderedData.seekg(0, std::ios::beg);
+    randomOrderedData.seekg(0, std::ios::beg);
+    duration_start = std::chrono::high_resolution_clock::now();
+    for (int i{0}; i < number; ++i) {
+        switch (type){
+            case 0:
+                orderedData  >> stream;
+                break;
+            case 1:
+                reverseOrderedData  >> stream;
+                break;
+            case 2:
+                randomOrderedData  >> stream;
+                break;
+        }
+        Tree->remove(stream);
+    }
+    duration_end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
+    resultsDel << "AVL, " << "deletion, " << number << ", " << duration << "\n";
 }
 
-void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, std::ifstream& data){
-    //data.open();
+void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsDel, int type){
+    std::ifstream orderedData ("../tests/PN_ordered_numbers.csv");
+    std::ifstream reverseOrderedData ("../tests/PN_reversed_numbers.csv");
+    std::ifstream randomOrderedData ("../tests/PN_random_numbers.csv");
+
     constexpr int chosenHeight{5};
     std::unique_ptr<SkipList<int>> List = std::make_unique<SkipList<int>>(chosenHeight);
     int stream{};
     auto duration_start = std::chrono::high_resolution_clock::now();
     for (int i{0}; i < number; ++i) {
-        data >> stream;
+        switch (type){
+            case 0:
+                orderedData  >> stream;
+                break;
+            case 1:
+                reverseOrderedData  >> stream;
+                break;
+            case 2:
+                randomOrderedData  >> stream;
+                break;
+        }
         List->insert_element(stream);
     }
     auto duration_end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
+// wskaźnik na poczatek pliku
+    orderedData.seekg(0, std::ios::beg);
+    reverseOrderedData.seekg(0, std::ios::beg);
+    randomOrderedData.seekg(0, std::ios::beg);
     resultsIn << "SL, " << "insertion, " << number << ", " << duration << "\n";
-
     duration_start = std::chrono::high_resolution_clock::now();
     for (int i{0}; i < number; ++i) {
-        data >> stream;
+        switch (type){
+            case 0:
+                orderedData  >> stream;
+                break;
+            case 1:
+                reverseOrderedData  >> stream;
+                break;
+            case 2:
+                randomOrderedData  >> stream;
+                break;
+        }
         List->remove_element(stream);
     }
     duration_end = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
+
     resultsDel << "SL, " << "deletion, " << number << ", " << duration << "\n";
-    data.close();
 }
