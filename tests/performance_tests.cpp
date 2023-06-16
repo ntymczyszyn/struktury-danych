@@ -28,11 +28,12 @@ int main(){
     std::ofstream resDelReverseOrderSL("../tests/results/SL/resultsPNReverseOrderDEL.csv", std::ios::app);
     std::ofstream resDelRandomOrderSL ("../tests/results/SL/resultsPNRandomOrderDEL.csv", std::ios::app);
 
-    std::vector<int> nSL {10, 100, 500, 1000, 1500, 2000, 5000, 10000, 15000,  20000};//, 50000};//, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    std::vector<int> nSL {10, 100, 500, 1000, 1500, 2000, 5000, 10000, 15000,  20000, 50000, 100000, 200000, 300000, 400000, 500000};//
+    std::vector<int> nSL1 {500000};
     std::vector<int> nAVL {10, 100, 500,  5000, 10000,  20000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
-    std::vector<int> test {10, 20};
+    std::vector<int> test {10, 5};
 
-    for (const auto& number : nSL){
+    for (const auto& number :nSL1){
 //        AVL_test(number, resInOrderedAVL, resDelOrderedAVL, 0);
 //        AVL_test(number, resInReverseOrderAVL,resDelReverseOrderAVL, 1);
 //        AVL_test(number, resInRandomOrderAVL, resDelRandomOrderAVL, 2);
@@ -98,7 +99,7 @@ void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsD
     std::ifstream reverseOrderedData ("../tests/PN_reversed_numbers.csv");
     std::ifstream randomOrderedData ("../tests/PN_random_numbers.csv");
 
-    constexpr int chosenHeight{5};
+    constexpr int chosenHeight{20};
     std::unique_ptr<SkipList<int>> List = std::make_unique<SkipList<int>>(chosenHeight);
     int stream{};
     auto duration_start = std::chrono::high_resolution_clock::now();
@@ -122,7 +123,11 @@ void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsD
     orderedData.seekg(0, std::ios::beg);
     reverseOrderedData.seekg(0, std::ios::beg);
     randomOrderedData.seekg(0, std::ios::beg);
-    resultsIn << "SL, " << "insertion, " << number << ", " << duration << "\n";
+    resultsIn << "SL, height, "<<chosenHeight<< ", insertion, " << number << ", " << duration << "\n";
+
+//    if(type == 0)
+//        List->show_list();
+
     duration_start = std::chrono::high_resolution_clock::now();
     for (int i{0}; i < number; ++i) {
         switch (type){
@@ -140,6 +145,10 @@ void skipList_test(int number, std::ofstream& resultsIn, std::ofstream& resultsD
     }
     duration_end = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration<double, std::milli>(duration_end - duration_start).count();
+
+//    if(type == 0)
+//        List->show_list();
+
 
     resultsDel << "SL, " << "deletion, " << number << ", " << duration << "\n";
 }

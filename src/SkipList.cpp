@@ -29,11 +29,11 @@ void SkipList<T>::insert_element(const T& valueToAdd){
 
     SNode<T>* newNode{new SNode<T> (valueToAdd)};
     if(find(head, newNode)->right != nullptr and find(head, newNode)->right->value == valueToAdd) {
-        //std::cout << "Value exists!\n";
+        delete newNode;
     }
     else {
         numberOfElements++;
-        std::uniform_int_distribution<int> dis(1, height + 1);
+        std::uniform_int_distribution<int> dis(1, height);
         int node_height{dis(rand)};
 
         //std::cout << "EL: "<<value<<"\tpoziom: " << node_height << std::endl << std::endl;
@@ -46,7 +46,7 @@ void SkipList<T>::insert_element(const T& valueToAdd){
         if (currentNode->right == nullptr) { // end of the list
             insert_node(currentNode, newNode, nullptr, node_height, 1);
         } else {
-            insert_node(find(currentNode, newNode), newNode, nullptr, node_height, 1);
+            insert_node(find(head, newNode), newNode, nullptr, node_height, 1);
         }
     }
 }
@@ -61,6 +61,7 @@ void SkipList<T>::remove_element(const T& value){
         remove_node(find(head, node2)->right);
     }
     else {
+        delete node2;
         //std::cout << "Element not found";
     }
     delete node2;
@@ -86,7 +87,7 @@ int SkipList<T>::get_element_rank(const T& value){
         distance_sum += temp->left_distance;
         temp = temp->left;
     }
-    delete node2;
+    delete node2; // <- to ma tu być? nie usunie node z listy?
 
     return distance_sum;
 }
@@ -166,9 +167,10 @@ void SkipList<T>::insert_node(SNode<T>* node, SNode<T>* nodeToAdd, SNode<T>* low
             if (temp->up != nullptr) {
                 node = temp->up;
                 lower = nodeToAdd;
-                nodeToAdd = new SNode<T>(lower->value);
-                // czemu to jest wykomentowane??
-                //insert_node(temp, new SNode<T>(nodeToAdd->value), nodeToAdd, insert_height, distance);
+                if( h < insert_height - 1 ) {
+                    nodeToAdd = nullptr;
+                    nodeToAdd = new SNode<T>(lower->value);
+                }
             }
         } else {
             if(k == 0 and lower->right != nullptr) {
@@ -205,35 +207,39 @@ void SkipList<T>::remove_node(SNode<T>* node) {
     //removing node
     SNode<T>* temp = node;
     while (temp->up != nullptr) {
-        if(temp->left != nullptr) {
+        if (temp->left != nullptr) {
             temp->left->right = temp->right;
         }
-        if(temp->right!= nullptr) {
+        if (temp->right != nullptr) {
             temp->right->left = temp->left;
             temp->right->left_distance += temp->left_distance - 1;
         }
-        delete temp;
-        temp = temp->up;
-    }
-
-    if(temp->left != nullptr) {
-        temp->left->right = temp->right;
-    }
-    if(temp->right != nullptr) {
-        temp->right->left = temp->left;
-        temp->right->left_distance += temp->left_distance - 1;
-    }
-    delete temp;
-    //updating distance
-    while (temp->left != nullptr and temp->up != nullptr) {
-        while (temp->up == nullptr and temp->left != nullptr) {
-            temp = temp->left;
+        if (temp->up != nullptr) {
+            temp = temp->up;
+            delete temp->down;
         }
-        if(temp->right != nullptr)
-            temp->right->left_distance--;
-        temp = temp->up;
-
-        //std::cout<<"remove  0\n";
     }
 
+        if (temp->left != nullptr) {
+            temp->left->right = temp->right;
+        }
+        if (temp->right != nullptr) {
+            temp->right->left = temp->left;
+            temp->right->left_distance += temp->left_distance - 1;
+        }
+
+        // usuwanie ostatniego
+        SNode<T> *temp2 = temp->left;
+        delete temp;
+
+        while (temp2->left != nullptr and temp2->up != nullptr) {
+            while (temp2->up == nullptr and temp2->left != nullptr) {
+                temp2 = temp2->left;
+            }
+            if (temp2->right != nullptr)
+                temp2->right->left_distance--;
+            temp2 = temp2->up;
+
+            //std::cout<<"remove  0\n";
+        }
 }
